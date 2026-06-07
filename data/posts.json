@@ -1,3 +1,10 @@
 {
-  "posts": []
+  "posts": [
+    {
+      "date": "2026-06-07T22:53:00",
+      "title": "coco",
+      "image": "/images/uploads/pjimage-2020-10-20T171315.091.avif",
+      "body": "test"
+    }
+  ]
 }
