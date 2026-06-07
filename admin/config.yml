@@ -1,0 +1,26 @@
+backend:
+  name: github
+  repo: bootlegpirates/cptnkid-site
+  branch: main
+
+# Where uploaded images are stored / linked from
+media_folder: "images/uploads"
+public_folder: "/images/uploads"
+
+collections:
+  - name: "timeline"
+    label: "Timeline"
+    files:
+      - name: "posts"
+        label: "Timeline posts"
+        file: "data/posts.json"
+        format: "json"
+        fields:
+          - name: "posts"
+            label: "Posts"
+            widget: "list"
+            fields:
+              - { name: "date",  label: "Date",  widget: "datetime" }
+              - { name: "title", label: "Title", widget: "string" }
+              - { name: "image", label: "Image", widget: "image", required: false }
+              - { name: "body",  label: "Text",  widget: "markdown" }
