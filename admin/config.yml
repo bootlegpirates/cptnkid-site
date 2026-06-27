@@ -8,19 +8,34 @@ media_folder: "images/uploads"
 public_folder: "/images/uploads"
 
 collections:
-  - name: "timeline"
-    label: "Timeline"
+  - name: "content"
+    label: "Posts"
     files:
       - name: "posts"
-        label: "Timeline posts"
+        label: "All posts"
         file: "data/posts.json"
         format: "json"
         fields:
           - name: "posts"
             label: "Posts"
+            label_singular: "Post"
             widget: "list"
+            summary: "{{fields.title}}"
             fields:
-              - { name: "date",  label: "Date",  widget: "datetime" }
-              - { name: "title", label: "Title", widget: "string" }
-              - { name: "image", label: "Image", widget: "image", required: false }
-              - { name: "body",  label: "Text",  widget: "markdown" }
+              - { name: "title",       label: "Title",                          widget: "string" }
+              - { name: "category",    label: "Category",                       widget: "select", options: ["Movies", "Anime", "Docs", "Work"] }
+              - { name: "rating",      label: "Rating (0-5 stars)",             widget: "number", value_type: "int", min: 0, max: 5, default: 0 }
+              - { name: "description", label: "Description",                    widget: "text" }
+              - { name: "tags",        label: "Tags (comma separated)",         widget: "string", required: false }
+              - { name: "featured",    label: "Featured on homepage",           widget: "boolean", default: false }
+              - { name: "image",       label: "Main image",                     widget: "image",  required: false }
+              - { name: "video",       label: "Detail-page video (YouTube URL)", widget: "string", required: false }
+              - name: "carousel"
+                label: "Carousel images"
+                widget: "list"
+                required: false
+                max: 10
+                summary: "{{fields.caption}}"
+                fields:
+                  - { name: "image",   label: "Image",   widget: "image" }
+                  - { name: "caption", label: "Caption", widget: "string", required: false }
