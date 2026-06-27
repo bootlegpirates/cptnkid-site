@@ -1,3 +1,20 @@
 {
-  "posts": []
+  "posts": [
+    {
+      "title": "Uncut Gems",
+      "category": "Movies",
+      "rating": 5,
+      "description": "Howard Ratner is a charismatic New York City jeweler always on the lookout for the next big score. When he makes a series of high-stakes bets that could lead to the windfall of a lifetime, Howard must perform a precarious high-wire act, balancing business, family, and encroaching adversaries on all sides, in his relentless pursuit of the ultimate win.",
+      "tags": "a24, Safie",
+      "featured": false,
+      "image": "/images/uploads/carousel 2.jpg",
+      "video": "https://www.youtube.com/watch?v=vTfJp2Ts9X8",
+      "carousel": [
+        {
+          "image": "/images/uploads/pjimage-2020-10-20T171315.091.avif",
+          "caption": ""
+        }
+      ]
+    }
+  ]
 }
