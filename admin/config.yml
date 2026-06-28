@@ -4,7 +4,7 @@ backend:
   branch: main
 
 # Where uploaded images are stored / linked from
-media_folder: "images/uploads"
+media_folder: "static/images/uploads"
 public_folder: "/images/uploads"
 
 collections:
