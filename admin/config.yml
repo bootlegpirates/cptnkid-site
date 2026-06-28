@@ -39,3 +39,31 @@ collections:
                 fields:
                   - { name: "image",   label: "Image",   widget: "image" }
                   - { name: "caption", label: "Caption", widget: "string", required: false }
+                  - name: random
+    label: Random page
+    files:
+      - name: random_grid
+        label: Instagram grid
+        file: data/random.json
+        format: json
+        fields:
+          - name: links
+            label: Tiles
+            label_singular: Tile
+            widget: list
+            summary: "{{fields.url}}"
+            fields:
+              - name: url
+                label: Instagram URL
+                widget: string
+                hint: Full post URL, e.g. https://www.instagram.com/p/XXXXXXXXX/
+              - name: kind
+                label: Type
+                widget: select
+                options: [video, image]
+                default: video
+              - name: thumb
+                label: Thumbnail (optional)
+                widget: image
+                required: false
+                hint: Square image. If empty, the live Instagram embed is used.
