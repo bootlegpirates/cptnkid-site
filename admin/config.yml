@@ -6,7 +6,7 @@ backend:
 # Where uploaded images are stored / linked from.
 # This is a plain static site rooted at the repo root — there is NO `static/`
 # folder — so media must live in `images/uploads`, matching the public path.
-media_folder: "images/uploads"
+media_folder: "static/images/uploads"
 public_folder: "/images/uploads"
 
 collections:
