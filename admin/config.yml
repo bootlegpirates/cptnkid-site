@@ -61,8 +61,10 @@ collections:
             label: "Tiles"
             label_singular: "Tile"
             widget: "list"
-            summary: "{{fields.kind}}  ·  {{fields.url}}"
+            collapsed: true
+            summary: "{{fields.name}}  ·  {{fields.kind}}  ·  {{fields.url}}"
             fields:
+              - { name: "name",  label: "Name (internal only)", widget: "string", required: false, hint: "Just for you — a quick label so you recognise the tile in this list. Not shown on the site." }
               - { name: "url",   label: "Instagram URL", widget: "string", hint: "Full post URL, e.g. https://www.instagram.com/p/XXXXXXXXX/" }
               - { name: "kind",  label: "Type", widget: "select", options: ["video", "image"], default: "video" }
               - { name: "thumb", label: "Thumbnail (optional)", widget: "image", required: false, hint: "Square image shown on the card/grid. If empty, the live Instagram embed is used on the site." }
