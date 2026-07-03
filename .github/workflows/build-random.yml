@@ -1,0 +1,88 @@
+name: Build random.json
+
+# Rebuilds data/random.json (what the site reads) from the per-tile files
+# in data/random/*.json whenever those tiles change.
+#
+# Ordering:
+#   1. Tiles WITH an "order" number come first, sorted ascending (manual pin).
+#   2. Tiles WITHOUT an order follow, newest first (by the timestamp in the
+#      filename, e.g. tile-20260703-120400.json).
+#
+# Only url/kind/thumb are written to random.json — internal fields like
+# "name" and "order" are stripped so they never reach the public site.
+#
+# No infinite loop: this workflow only triggers on changes under data/random/**,
+# and it writes data/random.json (not under data/random/), plus [skip ci].
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'data/random/**'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Assemble data/random.json
+        run: |
+          python3 - <<'PY'
+          import json, glob, os
+
+          tiles = []
+          for path in sorted(glob.glob('data/random/*.json')):
+              with open(path, encoding='utf-8') as f:
+                  try:
+                      data = json.load(f)
+                  except json.JSONDecodeError:
+                      print(f'Skipping invalid JSON: {path}')
+                      continue
+              data['_slug'] = os.path.splitext(os.path.basename(path))[0]
+              tiles.append(data)
+
+          def has_order(t):
+              o = t.get('order')
+              return isinstance(o, int) or (isinstance(o, str) and o.strip() != '')
+
+          def order_val(t):
+              try:
+                  return int(t.get('order'))
+              except (TypeError, ValueError):
+                  return 0
+
+          ordered = sorted((t for t in tiles if has_order(t)), key=order_val)
+          # newest first: filenames are time-based, so reverse-lexicographic works
+          rest = sorted((t for t in tiles if not has_order(t)),
+                        key=lambda t: t['_slug'], reverse=True)
+          final = ordered + rest
+
+          links = [{
+              'url':   t.get('url', ''),
+              'kind':  t.get('kind', 'video'),
+              'thumb': t.get('thumb', '') or '',
+          } for t in final]
+
+          os.makedirs('data', exist_ok=True)
+          with open('data/random.json', 'w', encoding='utf-8') as f:
+              json.dump({'links': links}, f, ensure_ascii=False, indent=2)
+              f.write('\n')
+          print(f'Wrote {len(links)} tiles to data/random.json')
+          PY
+
+      - name: Commit if changed
+        run: |
+          if [[ -n "$(git status --porcelain data/random.json)" ]]; then
+            git config user.name  "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git add data/random.json
+            git commit -m "chore: rebuild random.json [skip ci]"
+            git push
+          else
+            echo "No changes to data/random.json"
+          fi
