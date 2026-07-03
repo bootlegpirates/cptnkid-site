@@ -2,13 +2,12 @@ backend:
   name: github
   repo: bootlegpirates/cptnkid-site
   branch: main
-
 # Where uploaded images are stored / linked from.
-# This is a plain static site rooted at the repo root — there is NO `static/`
-# folder — so media must live in `images/uploads`, matching the public path.
-media_folder: "static/images/uploads"
+# Working thumbs live at the repo root under images/uploads and the site
+# serves them from /images/uploads, so media_folder must point there too
+# (NOT static/images/uploads, or new uploads 404 on the live site).
+media_folder: "images/uploads"
 public_folder: "/images/uploads"
-
 collections:
   # ============================================================
   # TIMELINE / POSTS  →  data/posts.json   (unchanged)
@@ -44,26 +43,26 @@ collections:
                 fields:
                   - { name: "image",   label: "Image",   widget: "image" }
                   - { name: "caption", label: "Caption", widget: "string", required: false }
-
   # ============================================================
-  # RANDOM PAGE (Instagram grid)  →  one file per tile in data/random/
-  # A GitHub Action rebuilds data/random.json (what the site reads) on push.
-  # As a FOLDER collection, Sveltia shows a clickable grid of thumbnail cards.
+  # RANDOM PAGE (Instagram grid)  →  data/random.json  (file collection)
+  # Edits data/random.json directly, exactly like the Posts collection.
+  # The top-level key in random.json is "links", so the list field MUST be
+  # named "links" or the site won't find the tiles after a save.
   # ============================================================
   - name: "random"
     label: "Random page"
-    label_singular: "Tile"
-    folder: "data/random"
-    create: true
-    format: "json"
-    extension: "json"
-    identifier_field: "url"
-    slug: "tile-{{year}}{{month}}{{day}}-{{hour}}{{minute}}{{second}}"
-    summary: "{{fields.kind}}  ·  {{fields.url}}"
-    thumbnail: "thumb"
-    sortable_fields: ["order", "url"]
-    fields:
-      - { name: "url",   label: "Instagram URL", widget: "string", hint: "Full post URL, e.g. https://www.instagram.com/p/XXXXXXXXX/" }
-      - { name: "kind",  label: "Type", widget: "select", options: ["video", "image"], default: "video" }
-      - { name: "thumb", label: "Thumbnail (optional)", widget: "image", required: false, hint: "Square image shown on the card and grid. If empty, the live Instagram embed is used on the site." }
-      - { name: "order", label: "Sort order (optional)", widget: "number", value_type: "int", required: false, hint: "Lower shows first. Blank = ordered by creation time." }
+    files:
+      - name: "random"
+        label: "Instagram grid"
+        file: "data/random.json"
+        format: "json"
+        fields:
+          - name: "links"
+            label: "Tiles"
+            label_singular: "Tile"
+            widget: "list"
+            summary: "{{fields.kind}}  ·  {{fields.url}}"
+            fields:
+              - { name: "url",   label: "Instagram URL", widget: "string", hint: "Full post URL, e.g. https://www.instagram.com/p/XXXXXXXXX/" }
+              - { name: "kind",  label: "Type", widget: "select", options: ["video", "image"], default: "video" }
+              - { name: "thumb", label: "Thumbnail (optional)", widget: "image", required: false, hint: "Square image shown on the card/grid. If empty, the live Instagram embed is used on the site." }
