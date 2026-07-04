@@ -9,6 +9,14 @@
       "featured": true,
       "image": "/images/uploads/carousel 2.jpg",
       "video": "https://www.youtube.com/watch?v=vTfJp2Ts9X8",
+      "featuredTitle": "",
+      "featuredDesc": "",
+      "featuredTags": [
+        {
+          "label": "A24",
+          "kind": "default"
+        }
+      ],
       "carousel": [
         {
           "image": "/images/uploads/Screenshot 2026-06-07 at 19.33.52.png",
