@@ -12,7 +12,10 @@ name: Build random.json
 # "name" and "order" are stripped so they never reach the public site.
 #
 # No infinite loop: this workflow only triggers on changes under data/random/**,
-# and it writes data/random.json (not under data/random/), plus [skip ci].
+# and it writes data/random.json (not under data/random/).
+# Note: deliberately NOT using "[skip ci]" in the commit message below —
+# Netlify's GitHub integration treats that tag as "skip this deploy", which
+# silently left the live site out of date after every rebuild.
 
 on:
   push:
@@ -81,7 +84,7 @@ jobs:
             git config user.name  "github-actions[bot]"
             git config user.email "github-actions[bot]@users.noreply.github.com"
             git add data/random.json
-            git commit -m "chore: rebuild random.json [skip ci]"
+            git commit -m "chore: rebuild random.json"
             git push
           else
             echo "No changes to data/random.json"
