@@ -64,6 +64,21 @@ collections:
                   - { name: "image",   label: "Image",   widget: "image" }
                   - { name: "caption", label: "Caption", widget: "string", required: false }
   # ============================================================
+  # SITE SETTINGS  →  data/settings.json  (single file, global values)
+  # ============================================================
+  - name: "settings"
+    label: "Site settings"
+    files:
+      - name: "settings"
+        label: "General"
+        file: "data/settings.json"
+        format: "json"
+        fields:
+          - name: "homeVideoUrl"
+            label: "Homepage hero video (YouTube URL)"
+            widget: "string"
+            hint: "The looping video on the left side of the homepage. Paste any YouTube link (watch, youtu.be, or embed URL all work)."
+  # ============================================================
   # RANDOM PAGE (Instagram grid)  →  data/random.json  (file collection)
   # Each tile is its own file in data/random/. A GitHub Action
   # (.github/workflows/build-random.yml) rebuilds data/random.json — what the
