@@ -13,7 +13,7 @@ collections:
   # TIMELINE / POSTS  →  data/posts.json   (unchanged)
   # ============================================================
   - name: "content"
-    label: "Posts"
+    label: "Timeline Posts"
     files:
       - name: "posts"
         label: "All posts"
@@ -67,7 +67,7 @@ collections:
   # SITE SETTINGS  →  data/settings.json  (single file, global values)
   # ============================================================
   - name: "settings"
-    label: "Site settings"
+    label: "Video Mainpage"
     files:
       - name: "settings"
         label: "General"
@@ -87,7 +87,7 @@ collections:
   # "New" button pinned top-right, and lets you sort the grid.
   # ============================================================
   - name: "random"
-    label: "Random page"
+    label: "Instagram feed"
     label_singular: "Tile"
     folder: "data/random"
     create: true
