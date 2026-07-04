@@ -34,6 +34,26 @@ collections:
               - { name: "featured",    label: "Featured on homepage",            widget: "boolean", default: false }
               - { name: "image",       label: "Main image",                      widget: "image",  required: false }
               - { name: "video",       label: "Detail-page video (YouTube URL)", widget: "string", required: false }
+              - name: "featuredTitle"
+                label: "Featured card — title override"
+                widget: "string"
+                required: false
+                hint: "Only shown on the homepage FEATURED card. Leave blank to reuse the Title above."
+              - name: "featuredDesc"
+                label: "Featured card — description override"
+                widget: "text"
+                required: false
+                hint: "Only shown on the homepage FEATURED card. Leave blank to reuse the first sentence of Description above."
+              - name: "featuredTags"
+                label: "Featured card — small tags"
+                widget: "list"
+                required: false
+                max: 4
+                summary: "{{fields.label}}"
+                hint: "The small pill labels overlaid on the FEATURED card image (e.g. NEW, EPISODE)."
+                fields:
+                  - { name: "label", label: "Label", widget: "string" }
+                  - { name: "kind",  label: "Style",  widget: "select", options: ["default", "pink"], default: "default" }
               - name: "carousel"
                 label: "Carousel images"
                 widget: "list"
