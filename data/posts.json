@@ -1,26 +1,6 @@
 {
   "posts": [
     {
-      "title": "Stalker",
-      "year": "1979",
-      "type": "movies",
-      "director": "Andrei Tarkovsky",
-      "rating": 4.7,
-      "duration": "162 mins",
-      "rt": "100%",
-      "lb": "4.4",
-      "synopsis": "A guide leads a writer and a scientist through the Zone, a forbidden landscape where a room is said to grant your deepest wish.",
-      "pluses": [
-        "Sublime long takes",
-        "Overwhelming atmosphere"
-      ],
-      "minuses": [
-        "Glacial by design"
-      ],
-      "youtube": "",
-      "poster": ""
-    },
-    {
       "title": "I Am Not Your Negro",
       "year": "2016",
       "type": "documentary",
