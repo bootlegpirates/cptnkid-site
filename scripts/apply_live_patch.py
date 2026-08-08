@@ -141,6 +141,21 @@ def _cms_only_homepage(tmpl):
     tmpl = _re.sub(r"const directors = \[[^\]]*\];",
                    "const directors = [...new Set(this._examples().map(e => e.director).filter(Boolean))];",
                    tmpl, count=1)
+    # d0) Random grid: render exactly one tile per CMS post (was a fixed 30 that
+    #     cycled/repeated posts). Scoped to the igTiles builder after the IG fallback.
+    ig = tmpl.find("window.__LIVE.instagram:[")
+    if ig != -1:
+        win_end = ig + 2500
+        seg = tmpl[ig:win_end]
+        if "for (let i = 0; i < 30; i++)" in seg:
+            seg = seg.replace("for (let i = 0; i < 30; i++)",
+                              "for (let i = 0; i < posts.length; i++)", 1)
+            tmpl = tmpl[:ig] + seg + tmpl[win_end:]
+        else:
+            print("[random] note: 30-tile loop not found; skipped")
+    else:
+        print("[random] note: igTiles builder not found; skipped")
+
     # d) remove the three frozen demo cards (postVisible0/1/2 sc-if blocks)
     for idx in ("0","1","2"):
         s0 = tmpl.find('<sc-if value="{{ postVisible%s }}"' % idx)
