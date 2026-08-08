@@ -179,50 +179,55 @@ def _cms_only_homepage(tmpl):
 
 
 def _random_thumbnails(tmpl):
-    """Best-effort: turn the Random grid into a linked-thumbnail masonry driven by
-    /data/random.json items ({url, kind, thumb}), and restore the right-side detail
-    panel (large image + Open-post link) shown when a tile is clicked. No-ops safely
-    if the export shape changes."""
+    """Best-effort: Random grid becomes a uniform (aligned) grid of CMS thumbnails;
+    clicking a tile opens an Instagram-post embed on the right (image or video viewable
+    inside). Falls back to the thumbnail image for non-Instagram URLs. No-ops safely if
+    the export shape changes."""
     import re as _r
-    # a) igTiles builder -> thumbnails; click opens the detail panel
+    # (a) alignment: masonry columns -> uniform CSS grid (desktop inline + mobile rule)
+    tmpl = tmpl.replace('column-count:{{ gridCols }};column-gap:8px;',
+                        'display:grid;grid-template-columns:repeat({{ gridCols }}, 1fr);gap:8px;align-content:start;', 1)
+    tmpl = tmpl.replace('.rnd-grid{column-count:2 !important;column-gap:5px !important;}',
+                        '.rnd-grid{grid-template-columns:repeat(2,1fr) !important;gap:5px !important;}', 1)
+    tmpl = tmpl.replace('.rnd-grid > div{margin-bottom:5px !important;border-radius:5px !important;}',
+                        '.rnd-grid > div{margin-bottom:0 !important;border-radius:5px !important;}', 1)
+    # (b) igTiles builder -> thumbnails carrying Instagram embed data; click opens panel
     s = tmpl.find("igTiles: (this._igTiles")
     e = tmpl.find("randomDetail: this.state.randomDetail,")
     if s != -1 and e != -1 and s < e:
         builder = (
-            "igTiles: (this._igTiles || (this._igTiles = (() => {\n"
-            "        const items = (window.__LIVE&&window.__LIVE.random&&window.__LIVE.random.length)?window.__LIVE.random:[];\n"
-            "        return items.filter(r => r && r.thumb).map((r, i) => ({\n"
-            "          thumb: r.thumb,\n"
-            "          url: r.url || '',\n"
-            "          badge: (r.kind === 'video') ? 'flex' : 'none',\n"
-            "          index: i,\n"
-            "          onClick: () => this.setState({ randomDetail: { thumb: r.thumb, url: r.url || '', badge: (r.kind === 'video') ? 'flex' : 'none', index: i } }),\n"
-            "        }));\n"
-            "      })())),\n      ")
+"igTiles: (this._igTiles || (this._igTiles = (() => {\n"
+"        const items = (window.__LIVE&&window.__LIVE.random&&window.__LIVE.random.length)?window.__LIVE.random:[];\n"
+"        const _ig = (u) => { u = String(u||''); var keys=['/p/','/reel/','/tv/']; for (var a=0;a<keys.length;a++){ var k=u.indexOf(keys[a]); if(k>=0){ var rest=u.slice(k+keys[a].length); var code=''; for(var b=0;b<rest.length;b++){ var c=rest[b]; if((c>='A'&&c<='Z')||(c>='a'&&c<='z')||(c>='0'&&c<='9')||c==='_'||c==='-') code+=c; else break; } if(code) return code; } } return ''; };\n"
+"        return items.filter(r => r && r.thumb).map((r, i) => {\n"
+"          const code = _ig(r.url || '');\n"
+"          const embed = code ? ('https://www.instagram.com/p/' + code + '/embed') : '';\n"
+"          const d = { thumb: r.thumb, url: r.url || '', embed: embed, hasEmbed: !!embed, noEmbed: !embed, badge: (r.kind === 'video') ? 'flex' : 'none', index: i };\n"
+"          return Object.assign({}, d, { onClick: () => this.setState({ randomDetail: d }) });\n"
+"        });\n"
+"      })())),\n      ")
         tmpl = tmpl[:s] + builder + tmpl[e:]
     else:
         print("[random] note: igTiles builder anchors not found; skipped")
-    # b) prev/next rebuild randomDetail from the new item shape
+    # (c) prev/next rebuild randomDetail from the new item shape
     tmpl = tmpl.replace("Object.assign({ bg: t.bg, index: n }, t.post)",
-                        "{ thumb: t.thumb, url: t.url, badge: t.badge, index: n }")
-    # c) add openRandomLink next to closeRandomDetail
+                        "{ thumb: t.thumb, url: t.url, embed: t.embed, hasEmbed: t.hasEmbed, noEmbed: t.noEmbed, badge: t.badge, index: n }")
+    # (d) add openRandomLink next to closeRandomDetail
     anc = "closeRandomDetail: () => this.setState({ randomDetail: null }),"
     if anc in tmpl and "openRandomLink" not in tmpl:
         tmpl = tmpl.replace(anc, anc + " openRandomLink: () => { const d = this.state.randomDetail; if (d && d.url) window.open(d.url, '_blank', 'noopener'); },", 1)
-    # d) gradient tile -> linked <img> + video badge
+    # (e) gradient tile -> uniform square thumbnail + video badge
     old_tile = ('<div sc-camel-on-click="{{ t.onClick }}" style="break-inside:avoid;-webkit-column-break-inside:avoid;'
                 'width:100%;margin-bottom:8px;border-radius:6px;overflow:hidden;aspect-ratio:{{ t.ar }};background:{{ t.bg }};cursor:pointer;"></div>')
-    new_tile = ('<div sc-camel-on-click="{{ t.onClick }}" style="break-inside:avoid;-webkit-column-break-inside:avoid;'
-                'width:100%;margin-bottom:8px;border-radius:6px;overflow:hidden;cursor:pointer;position:relative;background:#111;">'
-                '<img src="{{ t.thumb }}" loading="lazy" style="width:100%;display:block;"/>'
-                '<div style="position:absolute;top:8px;right:8px;display:{{ t.badge }};width:28px;height:28px;'
-                'border-radius:999px;background:rgba(0,0,0,0.55);align-items:center;justify-content:center;">'
+    new_tile = ('<div sc-camel-on-click="{{ t.onClick }}" style="width:100%;aspect-ratio:1/1;border-radius:6px;overflow:hidden;cursor:pointer;position:relative;background:#111;">'
+                '<img src="{{ t.thumb }}" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block;"/>'
+                '<div style="position:absolute;top:8px;right:8px;display:{{ t.badge }};width:28px;height:28px;border-radius:999px;background:rgba(0,0,0,0.55);align-items:center;justify-content:center;">'
                 '<svg width="12" height="12" viewBox="0 0 12 12" fill="#ffffff"><path d="M3 2l7 4-7 4z"/></svg></div></div>')
     if old_tile in tmpl:
         tmpl = tmpl.replace(old_tile, new_tile, 1)
     else:
         print("[random] note: gradient tile markup not found; skipped")
-    # e) rebuild the rnd-detail panel to show the thumbnail + Open-post link
+    # (f) rebuild the rnd-detail panel as an Instagram embed (image/video inside)
     d = tmpl.find('class="rnd-detail"')
     if d != -1:
         s2 = tmpl.rfind('<sc-if value="{{ randomDetail }}"', 0, d)
@@ -237,15 +242,20 @@ def _random_thumbnails(tmpl):
         if e2:
             new_panel = ('<sc-if value="{{ randomDetail }}" hint-placeholder-val="{{ false }}">\n'
 '          <div class="rnd-detail" style="flex:0 0 48%;max-width:750px;align-self:stretch;">\n'
-'            <div class="rnd-detail-card" style="position:sticky;top:66px;border-radius:16px;overflow:hidden;background:#111;display:flex;flex-direction:column;height:calc(100vh - 156px);box-sizing:border-box;box-shadow:0 20px 60px rgba(0,0,0,0.5);">\n'
-'              <div style="flex:1 1 auto;min-height:0;position:relative;background:#111;display:flex;align-items:center;justify-content:center;">\n'
-'                <img src="{{ randomDetail.thumb }}" style="max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;display:block;"/>\n'
-'                <div style="position:absolute;top:12px;right:12px;display:{{ randomDetail.badge }};width:44px;height:44px;border-radius:999px;background:rgba(0,0,0,0.6);align-items:center;justify-content:center;"><svg width="18" height="18" viewBox="0 0 12 12" fill="#ffffff"><path d="M3 2l7 4-7 4z"/></svg></div>\n'
-'              </div>\n'
-'              <div style="flex:none;display:flex;align-items:center;gap:12px;padding:14px 16px;background:#ffffff;border-radius:0 0 16px 16px;">\n'
-"                <span style=\"flex:1 1 auto;min-width:0;font-family:'Geist',-apple-system,BlinkMacSystemFont,sans-serif;font-size:14px;color:#555;letter-spacing:-0.01em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;\">{{ randomDetail.url }}</span>\n"
-"                <button sc-camel-on-click=\"{{ openRandomLink }}\" style=\"flex:none;display:inline-flex;align-items:center;justify-content:center;height:40px;padding:0 20px;border:none;border-radius:10px;background:#5b6cf5;color:#fff;font-family:'Geist',-apple-system,BlinkMacSystemFont,sans-serif;font-size:15px;font-weight:600;letter-spacing:-0.01em;cursor:pointer;\">Open post</button>\n"
-'              </div>\n'
+'            <div class="rnd-detail-card" style="position:sticky;top:66px;border-radius:16px;overflow:hidden;background:#ffffff;display:flex;flex-direction:column;height:calc(100vh - 156px);box-sizing:border-box;box-shadow:0 20px 60px rgba(0,0,0,0.5);">\n'
+'              <sc-if value="{{ randomDetail.hasEmbed }}" hint-placeholder-val="{{ true }}">\n'
+'                <iframe src="{{ randomDetail.embed }}" title="Instagram post" style="flex:1 1 auto;width:100%;min-height:0;border:0;display:block;background:#ffffff;" scrolling="yes" allowtransparency="true" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share" allowfullscreen=""></iframe>\n'
+'              </sc-if>\n'
+'              <sc-if value="{{ randomDetail.noEmbed }}" hint-placeholder-val="{{ false }}">\n'
+'                <div style="flex:1 1 auto;min-height:0;position:relative;background:#111;display:flex;align-items:center;justify-content:center;">\n'
+'                  <img src="{{ randomDetail.thumb }}" style="max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;display:block;"/>\n'
+'                  <div style="position:absolute;top:12px;right:12px;display:{{ randomDetail.badge }};width:44px;height:44px;border-radius:999px;background:rgba(0,0,0,0.6);align-items:center;justify-content:center;"><svg width="18" height="18" viewBox="0 0 12 12" fill="#ffffff"><path d="M3 2l7 4-7 4z"/></svg></div>\n'
+'                </div>\n'
+"                <div style=\"flex:none;display:flex;align-items:center;gap:12px;padding:14px 16px;background:#ffffff;\">\n"
+"                  <span style=\"flex:1 1 auto;min-width:0;font-family:'Geist',-apple-system,BlinkMacSystemFont,sans-serif;font-size:14px;color:#555;letter-spacing:-0.01em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;\">{{ randomDetail.url }}</span>\n"
+"                  <button sc-camel-on-click=\"{{ openRandomLink }}\" style=\"flex:none;display:inline-flex;align-items:center;justify-content:center;height:40px;padding:0 20px;border:none;border-radius:10px;background:#5b6cf5;color:#fff;font-family:'Geist',-apple-system,BlinkMacSystemFont,sans-serif;font-size:15px;font-weight:600;letter-spacing:-0.01em;cursor:pointer;\">Open post</button>\n"
+'                </div>\n'
+'              </sc-if>\n'
 '            </div>\n'
 '          </div>\n'
 '        </sc-if>')
