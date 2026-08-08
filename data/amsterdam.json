@@ -1,0 +1,16 @@
+{
+  "videos": [
+    {
+      "title": "",
+      "url": "https://www.youtube.com/watch?v=f1a6W2ZA8v0",
+      "maxSeconds": 3300,
+      "order": 0
+    },
+    {
+      "title": "",
+      "url": "https://www.youtube.com/watch?v=qoqr_9U6ZoU",
+      "maxSeconds": 2160,
+      "order": 1
+    }
+  ]
+}

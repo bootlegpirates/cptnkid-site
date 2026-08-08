@@ -1,0 +1,41 @@
+{
+  "videos": [
+    {
+      "title": "",
+      "url": "https://www.youtube.com/watch?v=jP5BWISLZg0",
+      "dur": 28000,
+      "order": 0
+    },
+    {
+      "title": "",
+      "url": "https://www.youtube.com/watch?v=a3hQz4EyY8k",
+      "dur": 3000,
+      "order": 1
+    },
+    {
+      "title": "",
+      "url": "https://www.youtube.com/watch?v=I6WRXeKZK64",
+      "dur": 3000,
+      "order": 2
+    },
+    {
+      "title": "",
+      "url": "https://www.youtube.com/watch?v=r8MZmb-IcoQ",
+      "dur": 39600,
+      "maxStart": 36000,
+      "order": 3
+    },
+    {
+      "title": "",
+      "url": "https://www.youtube.com/watch?v=VQ8ENTr90hA",
+      "dur": 28000,
+      "order": 4
+    },
+    {
+      "title": "",
+      "url": "https://www.youtube.com/watch?v=yteSsb4_QTU",
+      "dur": 10800,
+      "order": 5
+    }
+  ]
+}

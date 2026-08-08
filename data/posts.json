@@ -1,28 +1,232 @@
 {
   "posts": [
     {
-      "title": "Uncut Gems",
-      "category": "Movies",
-      "rating": 5,
-      "description": "Howard Ratner is a charismatic New York City jeweler always on the lookout for the next big score. When he makes a series of high-stakes bets that could lead to the windfall of a lifetime, Howard must perform a precarious high-wire act, balancing business, family, and encroaching adversaries on all sides, in his relentless pursuit of the ultimate win.",
-      "tags": "a24, Safie",
-      "featured": true,
-      "image": "/images/uploads/carousel 2.jpg",
-      "video": "https://www.youtube.com/watch?v=vTfJp2Ts9X8",
-      "featuredTitle": "",
-      "featuredDesc": "",
-      "featuredTags": [
-        {
-          "label": "A24",
-          "kind": "default"
-        }
+      "title": "Aguirre, the Wrath of God",
+      "year": "1972",
+      "type": "movies",
+      "director": "Werner Herzog",
+      "rating": 4.6,
+      "duration": "95 mins",
+      "rt": "96%",
+      "lb": "4.2",
+      "synopsis": "A delirious Spanish conquistador leads a doomed expedition down the Amazon in search of El Dorado, his sanity dissolving with every mile of jungle.",
+      "pluses": [
+        "Klaus Kinski at his most unhinged",
+        "Hypnotic river photography"
       ],
-      "carousel": [
-        {
-          "image": "/images/uploads/Screenshot 2026-06-07 at 19.33.52.png",
-          "caption": ""
-        }
-      ]
+      "minuses": [
+        "Deliberately punishing pace"
+      ],
+      "poster": ""
+    },
+    {
+      "title": "Come and See",
+      "year": "1985",
+      "type": "movies",
+      "director": "Elem Klimov",
+      "rating": 4.8,
+      "duration": "142 mins",
+      "rt": "98%",
+      "lb": "4.5",
+      "synopsis": "A boy joins the partisans in occupied Belarus and is dragged through the atrocities of war until his face is no longer that of a child.",
+      "pluses": [
+        "Devastating sound design",
+        "Unforgettable lead performance"
+      ],
+      "minuses": [
+        "Relentlessly harrowing"
+      ],
+      "poster": ""
+    },
+    {
+      "title": "Perfect Blue",
+      "year": "1997",
+      "type": "anime",
+      "director": "Satoshi Kon",
+      "rating": 4.7,
+      "duration": "81 mins",
+      "rt": "85%",
+      "lb": "4.3",
+      "synopsis": "A retired pop idol turned actress loses her grip on reality as a stalker and her own fracturing identity blur the line between self and image.",
+      "pluses": [
+        "Masterful editing",
+        "Genuinely unsettling"
+      ],
+      "minuses": [
+        "Dated production cels"
+      ],
+      "poster": ""
+    },
+    {
+      "title": "Sans Soleil",
+      "year": "1983",
+      "type": "documentary",
+      "director": "Chris Marker",
+      "rating": 4.3,
+      "duration": "100 mins",
+      "rt": "100%",
+      "lb": "4.3",
+      "synopsis": "A globe-spanning essay film stitched from letters, memory and footage of Japan and Guinea-Bissau, meditating on time and the images we keep.",
+      "pluses": [
+        "Hypnotic narration",
+        "Endlessly quotable"
+      ],
+      "minuses": [
+        "Demands your full attention"
+      ],
+      "poster": ""
+    },
+    {
+      "title": "Stalker",
+      "year": "1979",
+      "type": "movies",
+      "director": "Andrei Tarkovsky",
+      "rating": 4.7,
+      "duration": "162 mins",
+      "rt": "100%",
+      "lb": "4.4",
+      "synopsis": "A guide leads a writer and a scientist through the Zone, a forbidden landscape where a room is said to grant your deepest wish.",
+      "pluses": [
+        "Sublime long takes",
+        "Overwhelming atmosphere"
+      ],
+      "minuses": [
+        "Glacial by design"
+      ],
+      "poster": ""
+    },
+    {
+      "title": "Grave of the Fireflies",
+      "year": "1988",
+      "type": "anime",
+      "director": "Isao Takahata",
+      "rating": 4.9,
+      "duration": "89 mins",
+      "rt": "100%",
+      "lb": "4.5",
+      "synopsis": "Two siblings struggle to survive in the final months of WWII Japan after firebombing leaves them orphaned and alone.",
+      "pluses": [
+        "Emotionally shattering",
+        "Gorgeous hand-drawn work"
+      ],
+      "minuses": [
+        "Almost too painful to rewatch"
+      ],
+      "poster": ""
+    },
+    {
+      "title": "The Act of Killing",
+      "year": "2012",
+      "type": "documentary",
+      "director": "Joshua Oppenheimer",
+      "rating": 4.5,
+      "duration": "117 mins",
+      "rt": "95%",
+      "lb": "4.2",
+      "synopsis": "Perpetrators of the Indonesian genocide re-enact their killings as movie scenes, exposing a chilling gap between memory and conscience.",
+      "pluses": [
+        "Formally audacious",
+        "Haunting final act"
+      ],
+      "minuses": [
+        "Morally uncomfortable"
+      ],
+      "poster": ""
+    },
+    {
+      "title": "Tampopo",
+      "year": "1985",
+      "type": "movies",
+      "director": "Juzo Itami",
+      "rating": 4.2,
+      "duration": "114 mins",
+      "rt": "100%",
+      "lb": "4.1",
+      "synopsis": "A trucker helps a widow perfect her ramen shop in a playful ode to food, desire and the rituals of eating.",
+      "pluses": [
+        "Joyful and inventive",
+        "Delicious to watch"
+      ],
+      "minuses": [
+        "Loose, episodic structure"
+      ],
+      "poster": ""
+    },
+    {
+      "title": "Paprika",
+      "year": "2006",
+      "type": "anime",
+      "director": "Satoshi Kon",
+      "rating": 4.4,
+      "duration": "90 mins",
+      "rt": "86%",
+      "lb": "4.0",
+      "synopsis": "A stolen device lets a therapist enter patients dreams, until the dream world starts leaking catastrophically into waking life.",
+      "pluses": [
+        "Dazzling visuals",
+        "Bold dream logic"
+      ],
+      "minuses": [
+        "Plot can overwhelm"
+      ],
+      "poster": ""
+    },
+    {
+      "title": "Koyaanisqatsi",
+      "year": "1982",
+      "type": "documentary",
+      "director": "Godfrey Reggio",
+      "rating": 4.1,
+      "duration": "86 mins",
+      "rt": "90%",
+      "lb": "4.0",
+      "synopsis": "A wordless montage of nature and industry, scored by Philip Glass, arguing that modern life is out of balance.",
+      "pluses": [
+        "Iconic Glass score",
+        "Timeless imagery"
+      ],
+      "minuses": [
+        "No narrative anchor"
+      ],
+      "poster": ""
+    },
+    {
+      "title": "Woman in the Dunes",
+      "year": "1964",
+      "type": "movies",
+      "director": "Hiroshi Teshigahara",
+      "rating": 4.4,
+      "duration": "147 mins",
+      "rt": "100%",
+      "lb": "4.2",
+      "synopsis": "An entomologist is trapped in a sand pit with a lone woman, forced to shovel back the dunes that threaten to bury them both.",
+      "pluses": [
+        "Astonishing sand cinematography",
+        "Rich allegory"
+      ],
+      "minuses": [
+        "Slow, claustrophobic"
+      ],
+      "poster": ""
+    },
+    {
+      "title": "Angel's Egg",
+      "year": "1985",
+      "type": "anime",
+      "director": "Mamoru Oshii",
+      "rating": 4.3,
+      "duration": "71 mins",
+      "rt": "89%",
+      "lb": "4.1",
+      "synopsis": "In a drowned gothic world a silent girl guards a mysterious egg, in a near-wordless meditation on faith and loss.",
+      "pluses": [
+        "Painterly art direction",
+        "Dreamlike mood"
+      ],
+      "minuses": [
+        "Deliberately opaque"
+      ],
+      "poster": ""
     }
   ]
 }
