@@ -24,6 +24,9 @@ Usage:
 import re, sys, json, gzip, base64
 
 MARKER    = "__CPTNKID_LIVE_PATCH__"
+def _re_thumb():
+    import re as _r
+    return _r.compile(r'\s*<div id="__bundler_thumbnail">.*?</div>', _r.S)
 TV_MARKER = "__CPTNKID_TV_PATCH__"
 CRT_UUID  = "77ecc6c3-5fa1-4361-9f69-4d9feccc21cc"
 
@@ -252,7 +255,9 @@ def patch_main(html):
     tmpl = _cms_only_homepage(tmpl)
     tmpl = _random_thumbnails(tmpl)
     tmpl = _carousel_images(tmpl)
-    return html[:m.start(2)] + _esc(tmpl) + html[m.end(2):], True
+    out = html[:m.start(2)] + _esc(tmpl) + html[m.end(2):]
+    out = _re_thumb().sub("", out, count=1)  # drop the pre-load "CK" splash
+    return out, True
 
 def patch_crt(html):
     mm = re.search(r'(<script type="__bundler/manifest">\s*)(.*?)(\s*</script>)', html, re.S)
