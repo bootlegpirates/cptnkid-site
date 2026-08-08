@@ -253,7 +253,7 @@ def _random_thumbnails(tmpl):
                     mtopbar = old_block[mi:mj]
             new_panel = ('<sc-if value="{{ randomDetail }}" hint-placeholder-val="{{ false }}">\n'
 '          <div class="rnd-detail" style="flex:0 0 48%;max-width:750px;align-self:stretch;">\n'
-'            <div class="rnd-detail-card" style="position:sticky;top:66px;border-radius:16px;overflow:hidden;background:#ffffff;display:flex;flex-direction:column;height:auto;box-sizing:border-box;box-shadow:0 20px 60px rgba(0,0,0,0.5);">\n'
+'            <div class="rnd-detail-card" style="position:sticky;top:66px;border-radius:16px;overflow:hidden;background:#0d0d0f;display:flex;flex-direction:column;height:auto;box-sizing:border-box;box-shadow:0 20px 60px rgba(0,0,0,0.5);">\n'
 '              <sc-if value="{{ randomDetail.hasEmbed }}" hint-placeholder-val="{{ true }}">\n'
 '                <iframe src="{{ randomDetail.embed }}" title="Instagram post" style="width:100%;height:600px;border:0;display:block;background:#ffffff;" scrolling="no" allowtransparency="true" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share" allowfullscreen=""></iframe>\n'
 '              </sc-if>\n'
