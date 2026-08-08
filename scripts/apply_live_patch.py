@@ -51,6 +51,7 @@ MAIN_BOOTSTRAP = ("<!--%s-->\n<script>\n(function(){\n"
     "if(id){ids.push(id);mx.push(parseInt(v.maxSeconds,10)||0);}});if(ids.length)L.amsterdam={ids:ids,maxs:mx};}\n"
     "  var ig=get('/data/instagram.json');\n  if(ig&&ig.posts&&ig.posts.length)L.instagram=ig.posts;\n"
     "  var s=get('/data/settings.json');\n  if(s)L.settings=s;\n"
+    "  var rnd=get('/data/random.json');\n  if(rnd&&rnd.links&&rnd.links.length)L.random=rnd.links;\n"
     "  window.__LIVE=L;\n})();\n</script>") % MARKER
 
 TV_BOOTSTRAP = ("<!--%s-->\n<script>\n(function(){\n"
@@ -173,6 +174,74 @@ def _cms_only_homepage(tmpl):
             else: depth+=1
     return tmpl
 
+
+def _random_thumbnails(tmpl):
+    """Best-effort: turn the Random grid into a linked-thumbnail masonry driven by
+    /data/random.json items ({url, kind, thumb}). Safe no-ops if the export shape
+    changes."""
+    # a) replace the igTiles builder with a thumbnail mapping
+    s = tmpl.find("igTiles: (this._igTiles")
+    e = tmpl.find("randomDetail: this.state.randomDetail,")
+    if s != -1 and e != -1 and s < e:
+        builder = (
+            "igTiles: (this._igTiles || (this._igTiles = (() => {\n"
+            "        const items = (window.__LIVE&&window.__LIVE.random&&window.__LIVE.random.length)?window.__LIVE.random:[];\n"
+            "        return items.filter(r => r && r.thumb).map((r) => ({\n"
+            "          thumb: r.thumb,\n"
+            "          badge: (r.kind === 'video') ? 'flex' : 'none',\n"
+            "          onClick: () => { const u = r.url; if (u) window.open(u, '_blank', 'noopener'); },\n"
+            "        }));\n"
+            "      })())),\n      ")
+        tmpl = tmpl[:s] + builder + tmpl[e:]
+    else:
+        print("[random] note: igTiles builder anchors not found; skipped")
+    # b) replace the gradient tile div with a linked <img> + video badge
+    old_tile = ('<div sc-camel-on-click="{{ t.onClick }}" style="break-inside:avoid;'
+                '-webkit-column-break-inside:avoid;width:100%;margin-bottom:8px;border-radius:6px;'
+                'overflow:hidden;aspect-ratio:{{ t.ar }};background:{{ t.bg }};cursor:pointer;"></div>')
+    new_tile = ('<div sc-camel-on-click="{{ t.onClick }}" style="break-inside:avoid;'
+                '-webkit-column-break-inside:avoid;width:100%;margin-bottom:8px;border-radius:6px;'
+                'overflow:hidden;cursor:pointer;position:relative;background:#111;">'
+                '<img src="{{ t.thumb }}" loading="lazy" style="width:100%;display:block;"/>'
+                '<div style="position:absolute;top:8px;right:8px;display:{{ t.badge }};width:28px;height:28px;'
+                'border-radius:999px;background:rgba(0,0,0,0.55);align-items:center;justify-content:center;">'
+                '<svg width="12" height="12" viewBox="0 0 12 12" fill="#ffffff"><path d="M3 2l7 4-7 4z"/></svg></div></div>')
+    if old_tile in tmpl:
+        tmpl = tmpl.replace(old_tile, new_tile, 1)
+    else:
+        print("[random] note: gradient tile markup not found; skipped")
+    return tmpl
+
+
+def _carousel_images(tmpl):
+    """Best-effort: let homepage post cards fill their carousel with CMS-uploaded
+    images (post field `images`, a list). Falls back to placeholder tiles when a
+    post has no images. No-ops safely if the export shape changes."""
+    tf_old = ("const tilesFor = (i) => { const t = tilePatterns[i % tilePatterns.length]; "
+              "return [...t, ...t].map(ar => ({ ar, bg: phBg })); };")
+    tf_new = ("const BLANK = 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';\n"
+              "    const tilesFor = (i, e) => {\n"
+              "      const pat = tilePatterns[i % tilePatterns.length];\n"
+              "      const imgs = (e && Array.isArray(e.images)) ? e.images.filter(Boolean) : ((e && e.poster) ? [e.poster] : []);\n"
+              "      if (imgs.length) return imgs.map((src) => ({ ar: 'auto', bg: phBg, img: src, imgShow: 'block' }));\n"
+              "      return [...pat, ...pat].map(ar => ({ ar, bg: phBg, img: BLANK, imgShow: 'none' }));\n"
+              "    };")
+    if tf_old in tmpl:
+        tmpl = tmpl.replace(tf_old, tf_new, 1)
+        tmpl = tmpl.replace("tiles: tilesFor(k),", "tiles: tilesFor(k, e),", 1)
+    else:
+        print("[carousel] note: tilesFor not found; skipped")
+    tile_old = ('<div class="bp-ph" style="flex:0 0 auto;height:var(--th);width:auto;aspect-ratio:{{ t.ar }};'
+                'background-color:{{ t.bg }};border-radius:16px;overflow:hidden;cursor:pointer;position:relative;"></div>')
+    tile_new = ('<div class="bp-ph" style="flex:0 0 auto;height:var(--th);width:auto;aspect-ratio:{{ t.ar }};'
+                'background-color:{{ t.bg }};border-radius:16px;overflow:hidden;cursor:pointer;position:relative;">'
+                '<img src="{{ t.img }}" loading="lazy" style="display:{{ t.imgShow }};height:100%;width:auto;object-fit:cover;"/></div>')
+    if tile_old in tmpl:
+        tmpl = tmpl.replace(tile_old, tile_new, 1)
+    else:
+        print("[carousel] note: bp-ph tile markup not found; skipped")
+    return tmpl
+
 def patch_main(html):
     m = re.search(r'(<script type="__bundler/template">\s*)(.*?)(\s*</script>)', html, re.S)
     tmpl = json.loads(m.group(2))
@@ -181,6 +250,8 @@ def patch_main(html):
     tmpl = _apply(tmpl, MAIN_BOOTSTRAP, MAIN_PATCHES, "main")
     tmpl = _empty_arrays(tmpl, MAIN_EMPTY, "main")
     tmpl = _cms_only_homepage(tmpl)
+    tmpl = _random_thumbnails(tmpl)
+    tmpl = _carousel_images(tmpl)
     return html[:m.start(2)] + _esc(tmpl) + html[m.end(2):], True
 
 def patch_crt(html):
