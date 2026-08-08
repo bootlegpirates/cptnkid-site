@@ -1,63 +1,6 @@
 {
   "posts": [
     {
-      "title": "Aguirre, the Wrath of God",
-      "year": "1972",
-      "type": "movies",
-      "director": "Werner Herzog",
-      "rating": 4.6,
-      "duration": "95 mins",
-      "rt": "96%",
-      "lb": "4.2",
-      "synopsis": "A delirious Spanish conquistador leads a doomed expedition down the Amazon in search of El Dorado, his sanity dissolving with every mile of jungle.",
-      "pluses": [
-        "Klaus Kinski at his most unhinged",
-        "Hypnotic river photography"
-      ],
-      "minuses": [
-        "Deliberately punishing pace"
-      ],
-      "poster": ""
-    },
-    {
-      "title": "Come and See",
-      "year": "1985",
-      "type": "movies",
-      "director": "Elem Klimov",
-      "rating": 4.8,
-      "duration": "142 mins",
-      "rt": "98%",
-      "lb": "4.5",
-      "synopsis": "A boy joins the partisans in occupied Belarus and is dragged through the atrocities of war until his face is no longer that of a child.",
-      "pluses": [
-        "Devastating sound design",
-        "Unforgettable lead performance"
-      ],
-      "minuses": [
-        "Relentlessly harrowing"
-      ],
-      "poster": ""
-    },
-    {
-      "title": "Perfect Blue",
-      "year": "1997",
-      "type": "anime",
-      "director": "Satoshi Kon",
-      "rating": 4.7,
-      "duration": "81 mins",
-      "rt": "85%",
-      "lb": "4.3",
-      "synopsis": "A retired pop idol turned actress loses her grip on reality as a stalker and her own fracturing identity blur the line between self and image.",
-      "pluses": [
-        "Masterful editing",
-        "Genuinely unsettling"
-      ],
-      "minuses": [
-        "Dated production cels"
-      ],
-      "poster": ""
-    },
-    {
       "title": "Sans Soleil",
       "year": "1983",
       "type": "documentary",
