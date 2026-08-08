@@ -62,17 +62,41 @@ TV_BOOTSTRAP = ("<!--%s-->\n<script>\n(function(){\n"
     "  if(out.length)window.__LIVE_TV=out;\n})();\n</script>") % TV_MARKER
 
 MAIN_PATCHES = [
-    ("this._exCache = [",
-     "this._exCache = (window.__LIVE&&window.__LIVE.posts&&window.__LIVE.posts.length)?window.__LIVE.posts:["),
     ("_bgVideos = ['f1a6W2ZA8v0', 'qoqr_9U6ZoU'];",
      "_bgVideos = (window.__LIVE&&window.__LIVE.amsterdam&&window.__LIVE.amsterdam.ids.length)?window.__LIVE.amsterdam.ids:['f1a6W2ZA8v0', 'qoqr_9U6ZoU'];"),
     ("_bgVideoMax = [3300, 2160];",
      "_bgVideoMax = (window.__LIVE&&window.__LIVE.amsterdam&&window.__LIVE.amsterdam.maxs.length)?window.__LIVE.amsterdam.maxs:[3300, 2160];"),
-    ("const posts = [",
-     "const posts = (window.__LIVE&&window.__LIVE.instagram&&window.__LIVE.instagram.length)?window.__LIVE.instagram:["),
     ("text: 'BOOTLEG PIRATES & STUDIOS & '",
      "text: ((window.__LIVE&&window.__LIVE.settings&&window.__LIVE.settings.wordmark)||'BOOTLEG PIRATES & STUDIOS & ')"),
 ]
+# Homepage posts (_exCache) and the Random/instagram grid pull ONLY from the CMS.
+# Their baked demo arrays are replaced with [] so nothing is hard-coded: if the
+# /data/*.json fetch returns nothing, the grid is simply empty (no ghost demo data).
+MAIN_EMPTY = [
+    ("this._exCache = [",
+     "this._exCache = (window.__LIVE&&window.__LIVE.posts&&window.__LIVE.posts.length)?window.__LIVE.posts:[]"),
+    ("const posts = [",
+     "const posts = (window.__LIVE&&window.__LIVE.instagram&&window.__LIVE.instagram.length)?window.__LIVE.instagram:[]"),
+]
+
+def _empty_arrays(text, patches, label):
+    """Replace `anchor [ ... ]` (bracket-matched) with `repl`, dropping the array."""
+    for anchor, repl in patches:
+        i = text.find(anchor)
+        if i < 0:
+            raise SystemExit(f"[{label}] empty-anchor not found (bundle changed?): {anchor!r}")
+        start = i + len(anchor) - 1          # index of the '['
+        depth = 0; k = start
+        while k < len(text):
+            c = text[k]
+            if c == '[': depth += 1
+            elif c == ']':
+                depth -= 1
+                if depth == 0: k += 1; break
+            k += 1
+        text = text[:i] + repl + text[k:]
+    return text
+
 TV_PATCHES = [
     ("this.videos = [",
      "this.videos = (window.__LIVE_TV&&window.__LIVE_TV.length)?window.__LIVE_TV:["),
@@ -95,6 +119,7 @@ def patch_main(html):
     if MARKER in tmpl:
         return html, False
     tmpl = _apply(tmpl, MAIN_BOOTSTRAP, MAIN_PATCHES, "main")
+    tmpl = _empty_arrays(tmpl, MAIN_EMPTY, "main")
     return html[:m.start(2)] + _esc(tmpl) + html[m.end(2):], True
 
 def patch_crt(html):
