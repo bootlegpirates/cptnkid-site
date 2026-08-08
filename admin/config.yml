@@ -62,11 +62,12 @@ collections:
                 widget: "list"
                 required: false
                 field: { name: "text", label: "Minus", widget: "string" }
-              - name: "poster"
-                label: "Poster image (optional)"
-                widget: "image"
+              - name: "images"
+                label: "Carousel images"
+                widget: "list"
                 required: false
-                hint: "Optional. If blank, the card uses the built-in placeholder tiles."
+                hint: "Upload one or more images to fill this post's carousel (shown left-to-right). If empty, placeholder tiles show."
+                field: { name: "image", label: "Image", widget: "image" }
 
   # ============================================================
   # ANIME TV  ->  data/anime-tv.json
@@ -137,35 +138,35 @@ collections:
                 hint: "Highest point the loop may start from. Set a bit below the clip length. 0 = always start at the beginning."
               - { name: "order", label: "Sort order", widget: "number", value_type: "int", required: false }
 
+# ============================================================
+  # RANDOM  ->  data/random.json   (the thumbnail grid)
+  # Each item is a linked thumbnail. Clicking a tile opens the Link URL in a
+  # new tab; "video" adds a small play badge so you can tell it apart. The
+  # Thumbnail is the image shown in the grid.
   # ============================================================
-  # INSTAGRAM  ->  data/instagram.json   (the "Random" grid)
-  # The new design's Random grid shows curated posts as an IG handle plus
-  # film metadata over generated gradient tiles. There is no image upload
-  # or live embed in this design, so the fields mirror what the grid renders.
-  # ============================================================
-  - name: "instagram"
-    label: "Instagram"
+  - name: "random"
+    label: "Random"
     files:
-      - name: "instagram"
-        label: "Random grid"
-        file: "data/instagram.json"
+      - name: "items"
+        label: "Grid items"
+        file: "data/random.json"
         format: "json"
         fields:
-          - name: "posts"
-            label: "Posts"
-            label_singular: "Post"
+          - name: "links"
+            label: "Items"
+            label_singular: "Item"
             widget: "list"
-            summary: "@{{fields.user}} — {{fields.title}}"
+            summary: "{{fields.kind}} — {{fields.url}}"
             fields:
-              - { name: "user",     label: "Instagram handle", widget: "string", hint: "Without the @, e.g. retorojapan" }
-              - { name: "title",    label: "Film title", widget: "string" }
-              - { name: "year",     label: "Year",       widget: "string" }
-              - { name: "genre",    label: "Genre",      widget: "string", hint: "Free text label, e.g. Documentary, Drama, Sci-Fi" }
-              - { name: "director", label: "Director",   widget: "string" }
-              - { name: "duration", label: "Duration",   widget: "string", hint: "e.g. 100 mins" }
-              - { name: "rating",   label: "Rating",     widget: "string", hint: "Shown verbatim, e.g. 4.7 / 5" }
+              - { name: "url", label: "Link URL", widget: "string", hint: "Instagram or other post URL" }
+              - name: "kind"
+                label: "Kind"
+                widget: "select"
+                options: ["image", "video"]
+                default: "image"
+              - { name: "thumb", label: "Thumbnail", widget: "image" }
 
-  # ============================================================
+    # ============================================================
   # SITE SETTINGS  ->  data/settings.json  (single file, global values)
   # ============================================================
   - name: "settings"
