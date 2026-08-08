@@ -113,6 +113,51 @@ def _apply(text, bootstrap, patches, label):
         text = text.replace(anchor, repl, 1)
     return text
 
+
+def _cms_only_homepage(tmpl):
+    """Best-effort: strip the baked demo cards so the homepage/directors come ONLY
+    from the CMS. Safe no-ops (with a printed note) if a future export changes shape."""
+    import re as _re
+    # a) empty the `hard` prefix array that is concat'd in front of CMS posts
+    hb = tmpl.find("const hard = [")
+    if hb != -1:
+        depth=0; k=hb+len("const hard = ")
+        while k < len(tmpl):
+            c=tmpl[k]
+            if c=='[': depth+=1
+            elif c==']':
+                depth-=1
+                if depth==0: k+=1; break
+            k+=1
+        tmpl = tmpl[:hb] + "const hard = [];" + tmpl[k+1:]
+    else:
+        print("[homepage] note: `const hard = [` not found; skipped")
+    # b) re-index the render loop so CMS posts fill from slot 0 (not 3)
+    if "const idx = 3 + k;" in tmpl:
+        tmpl = tmpl.replace("const idx = 3 + k;", "const idx = k;", 1)
+    else:
+        print("[homepage] note: `const idx = 3 + k;` not found; skipped")
+    # c) derive the Directors filter from CMS instead of hard-coded names
+    tmpl = _re.sub(r"const directors = \[[^\]]*\];",
+                   "const directors = [...new Set(this._examples().map(e => e.director).filter(Boolean))];",
+                   tmpl, count=1)
+    # d) remove the three frozen demo cards (postVisible0/1/2 sc-if blocks)
+    for idx in ("0","1","2"):
+        s0 = tmpl.find('<sc-if value="{{ postVisible%s }}"' % idx)
+        if s0 == -1:
+            print(f"[homepage] note: static card {idx} not found; skipped"); continue
+        tok=_re.compile(r"<sc-if\b|</sc-if>"); depth=0
+        for mt in tok.finditer(tmpl, s0):
+            if mt.group(0).startswith("</"):
+                depth-=1
+                if depth==0:
+                    e=mt.end()
+                    while e<len(tmpl) and tmpl[e] in " \t": e+=1
+                    if e<len(tmpl) and tmpl[e]=="\n": e+=1
+                    tmpl = tmpl[:s0] + tmpl[e:]; break
+            else: depth+=1
+    return tmpl
+
 def patch_main(html):
     m = re.search(r'(<script type="__bundler/template">\s*)(.*?)(\s*</script>)', html, re.S)
     tmpl = json.loads(m.group(2))
@@ -120,6 +165,7 @@ def patch_main(html):
         return html, False
     tmpl = _apply(tmpl, MAIN_BOOTSTRAP, MAIN_PATCHES, "main")
     tmpl = _empty_arrays(tmpl, MAIN_EMPTY, "main")
+    tmpl = _cms_only_homepage(tmpl)
     return html[:m.start(2)] + _esc(tmpl) + html[m.end(2):], True
 
 def patch_crt(html):
