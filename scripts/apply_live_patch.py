@@ -179,18 +179,14 @@ def _cms_only_homepage(tmpl):
 
 
 def _random_thumbnails(tmpl):
-    """Best-effort: Random grid becomes a uniform (aligned) grid of CMS thumbnails;
-    clicking a tile opens an Instagram-post embed on the right (image or video viewable
-    inside). Falls back to the thumbnail image for non-Instagram URLs. No-ops safely if
-    the export shape changes."""
+    """Best-effort: Random grid becomes a full-width masonry of CMS thumbnails (uniform
+    column width, natural/variable height); clicking a tile opens an Instagram-post embed
+    on the right (image or video viewable inside), with a thumbnail fallback for
+    non-Instagram URLs. No-ops safely if the export shape changes."""
     import re as _r
-    # (a) alignment: masonry columns -> uniform CSS grid (desktop inline + mobile rule)
-    tmpl = tmpl.replace('column-count:{{ gridCols }};column-gap:8px;',
-                        'display:grid;grid-template-columns:repeat({{ gridCols }}, 1fr);gap:8px;align-content:start;', 1)
-    tmpl = tmpl.replace('.rnd-grid{column-count:2 !important;column-gap:5px !important;}',
-                        '.rnd-grid{grid-template-columns:repeat(2,1fr) !important;gap:5px !important;}', 1)
-    tmpl = tmpl.replace('.rnd-grid > div{margin-bottom:5px !important;border-radius:5px !important;}',
-                        '.rnd-grid > div{margin-bottom:0 !important;border-radius:5px !important;}', 1)
+    # (a) full-width: drop the 1500px cap so the grid reaches both page edges
+    tmpl = tmpl.replace('display:flex;gap:16px;align-items:flex-start;max-width:1500px;margin:0 auto;padding-top:0;',
+                        'display:flex;gap:16px;align-items:flex-start;max-width:none;margin:0;padding-top:0;', 1)
     # (b) igTiles builder -> thumbnails carrying Instagram embed data; click opens panel
     s = tmpl.find("igTiles: (this._igTiles")
     e = tmpl.find("randomDetail: this.state.randomDetail,")
@@ -216,11 +212,12 @@ def _random_thumbnails(tmpl):
     anc = "closeRandomDetail: () => this.setState({ randomDetail: null }),"
     if anc in tmpl and "openRandomLink" not in tmpl:
         tmpl = tmpl.replace(anc, anc + " openRandomLink: () => { const d = this.state.randomDetail; if (d && d.url) window.open(d.url, '_blank', 'noopener'); },", 1)
-    # (e) gradient tile -> uniform square thumbnail + video badge
+    # (e) gradient tile -> masonry thumbnail (uniform width, natural/variable height) + video badge
     old_tile = ('<div sc-camel-on-click="{{ t.onClick }}" style="break-inside:avoid;-webkit-column-break-inside:avoid;'
                 'width:100%;margin-bottom:8px;border-radius:6px;overflow:hidden;aspect-ratio:{{ t.ar }};background:{{ t.bg }};cursor:pointer;"></div>')
-    new_tile = ('<div sc-camel-on-click="{{ t.onClick }}" style="width:100%;aspect-ratio:1/1;border-radius:6px;overflow:hidden;cursor:pointer;position:relative;background:#111;">'
-                '<img src="{{ t.thumb }}" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block;"/>'
+    new_tile = ('<div sc-camel-on-click="{{ t.onClick }}" style="break-inside:avoid;-webkit-column-break-inside:avoid;'
+                'width:100%;margin-bottom:8px;border-radius:6px;overflow:hidden;cursor:pointer;position:relative;background:#111;">'
+                '<img src="{{ t.thumb }}" loading="lazy" style="width:100%;display:block;"/>'
                 '<div style="position:absolute;top:8px;right:8px;display:{{ t.badge }};width:28px;height:28px;border-radius:999px;background:rgba(0,0,0,0.55);align-items:center;justify-content:center;">'
                 '<svg width="12" height="12" viewBox="0 0 12 12" fill="#ffffff"><path d="M3 2l7 4-7 4z"/></svg></div></div>')
     if old_tile in tmpl:
