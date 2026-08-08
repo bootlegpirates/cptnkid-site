@@ -180,31 +180,40 @@ def _cms_only_homepage(tmpl):
 
 def _random_thumbnails(tmpl):
     """Best-effort: turn the Random grid into a linked-thumbnail masonry driven by
-    /data/random.json items ({url, kind, thumb}). Safe no-ops if the export shape
-    changes."""
-    # a) replace the igTiles builder with a thumbnail mapping
+    /data/random.json items ({url, kind, thumb}), and restore the right-side detail
+    panel (large image + Open-post link) shown when a tile is clicked. No-ops safely
+    if the export shape changes."""
+    import re as _r
+    # a) igTiles builder -> thumbnails; click opens the detail panel
     s = tmpl.find("igTiles: (this._igTiles")
     e = tmpl.find("randomDetail: this.state.randomDetail,")
     if s != -1 and e != -1 and s < e:
         builder = (
             "igTiles: (this._igTiles || (this._igTiles = (() => {\n"
             "        const items = (window.__LIVE&&window.__LIVE.random&&window.__LIVE.random.length)?window.__LIVE.random:[];\n"
-            "        return items.filter(r => r && r.thumb).map((r) => ({\n"
+            "        return items.filter(r => r && r.thumb).map((r, i) => ({\n"
             "          thumb: r.thumb,\n"
+            "          url: r.url || '',\n"
             "          badge: (r.kind === 'video') ? 'flex' : 'none',\n"
-            "          onClick: () => { const u = r.url; if (u) window.open(u, '_blank', 'noopener'); },\n"
+            "          index: i,\n"
+            "          onClick: () => this.setState({ randomDetail: { thumb: r.thumb, url: r.url || '', badge: (r.kind === 'video') ? 'flex' : 'none', index: i } }),\n"
             "        }));\n"
             "      })())),\n      ")
         tmpl = tmpl[:s] + builder + tmpl[e:]
     else:
         print("[random] note: igTiles builder anchors not found; skipped")
-    # b) replace the gradient tile div with a linked <img> + video badge
-    old_tile = ('<div sc-camel-on-click="{{ t.onClick }}" style="break-inside:avoid;'
-                '-webkit-column-break-inside:avoid;width:100%;margin-bottom:8px;border-radius:6px;'
-                'overflow:hidden;aspect-ratio:{{ t.ar }};background:{{ t.bg }};cursor:pointer;"></div>')
-    new_tile = ('<div sc-camel-on-click="{{ t.onClick }}" style="break-inside:avoid;'
-                '-webkit-column-break-inside:avoid;width:100%;margin-bottom:8px;border-radius:6px;'
-                'overflow:hidden;cursor:pointer;position:relative;background:#111;">'
+    # b) prev/next rebuild randomDetail from the new item shape
+    tmpl = tmpl.replace("Object.assign({ bg: t.bg, index: n }, t.post)",
+                        "{ thumb: t.thumb, url: t.url, badge: t.badge, index: n }")
+    # c) add openRandomLink next to closeRandomDetail
+    anc = "closeRandomDetail: () => this.setState({ randomDetail: null }),"
+    if anc in tmpl and "openRandomLink" not in tmpl:
+        tmpl = tmpl.replace(anc, anc + " openRandomLink: () => { const d = this.state.randomDetail; if (d && d.url) window.open(d.url, '_blank', 'noopener'); },", 1)
+    # d) gradient tile -> linked <img> + video badge
+    old_tile = ('<div sc-camel-on-click="{{ t.onClick }}" style="break-inside:avoid;-webkit-column-break-inside:avoid;'
+                'width:100%;margin-bottom:8px;border-radius:6px;overflow:hidden;aspect-ratio:{{ t.ar }};background:{{ t.bg }};cursor:pointer;"></div>')
+    new_tile = ('<div sc-camel-on-click="{{ t.onClick }}" style="break-inside:avoid;-webkit-column-break-inside:avoid;'
+                'width:100%;margin-bottom:8px;border-radius:6px;overflow:hidden;cursor:pointer;position:relative;background:#111;">'
                 '<img src="{{ t.thumb }}" loading="lazy" style="width:100%;display:block;"/>'
                 '<div style="position:absolute;top:8px;right:8px;display:{{ t.badge }};width:28px;height:28px;'
                 'border-radius:999px;background:rgba(0,0,0,0.55);align-items:center;justify-content:center;">'
@@ -213,19 +222,50 @@ def _random_thumbnails(tmpl):
         tmpl = tmpl.replace(old_tile, new_tile, 1)
     else:
         print("[random] note: gradient tile markup not found; skipped")
+    # e) rebuild the rnd-detail panel to show the thumbnail + Open-post link
+    d = tmpl.find('class="rnd-detail"')
+    if d != -1:
+        s2 = tmpl.rfind('<sc-if value="{{ randomDetail }}"', 0, d)
+        tok = _r.compile(r'<sc-if\b|</sc-if>'); depth = 0; e2 = None
+        for mt in tok.finditer(tmpl, s2):
+            if mt.group(0).startswith('</'):
+                depth -= 1
+                if depth == 0:
+                    e2 = mt.end(); break
+            else:
+                depth += 1
+        if e2:
+            new_panel = ('<sc-if value="{{ randomDetail }}" hint-placeholder-val="{{ false }}">\n'
+'          <div class="rnd-detail" style="flex:0 0 48%;max-width:750px;align-self:stretch;">\n'
+'            <div class="rnd-detail-card" style="position:sticky;top:66px;border-radius:16px;overflow:hidden;background:#111;display:flex;flex-direction:column;height:calc(100vh - 156px);box-sizing:border-box;box-shadow:0 20px 60px rgba(0,0,0,0.5);">\n'
+'              <div style="flex:1 1 auto;min-height:0;position:relative;background:#111;display:flex;align-items:center;justify-content:center;">\n'
+'                <img src="{{ randomDetail.thumb }}" style="max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;display:block;"/>\n'
+'                <div style="position:absolute;top:12px;right:12px;display:{{ randomDetail.badge }};width:44px;height:44px;border-radius:999px;background:rgba(0,0,0,0.6);align-items:center;justify-content:center;"><svg width="18" height="18" viewBox="0 0 12 12" fill="#ffffff"><path d="M3 2l7 4-7 4z"/></svg></div>\n'
+'              </div>\n'
+'              <div style="flex:none;display:flex;align-items:center;gap:12px;padding:14px 16px;background:#ffffff;border-radius:0 0 16px 16px;">\n'
+"                <span style=\"flex:1 1 auto;min-width:0;font-family:'Geist',-apple-system,BlinkMacSystemFont,sans-serif;font-size:14px;color:#555;letter-spacing:-0.01em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;\">{{ randomDetail.url }}</span>\n"
+"                <button sc-camel-on-click=\"{{ openRandomLink }}\" style=\"flex:none;display:inline-flex;align-items:center;justify-content:center;height:40px;padding:0 20px;border:none;border-radius:10px;background:#5b6cf5;color:#fff;font-family:'Geist',-apple-system,BlinkMacSystemFont,sans-serif;font-size:15px;font-weight:600;letter-spacing:-0.01em;cursor:pointer;\">Open post</button>\n"
+'              </div>\n'
+'            </div>\n'
+'          </div>\n'
+'        </sc-if>')
+            tmpl = tmpl[:s2] + new_panel + tmpl[e2:]
+    else:
+        print("[random] note: rnd-detail panel not found; skipped")
     return tmpl
 
-
 def _carousel_images(tmpl):
-    """Best-effort: let homepage post cards fill their carousel with CMS-uploaded
-    images (post field `images`, a list). Falls back to placeholder tiles when a
-    post has no images. No-ops safely if the export shape changes."""
+    """Best-effort: homepage post cards fill their carousel with CMS-uploaded images
+    (post field `images`, possibly multiple), use a CMS-provided YouTube URL for the
+    trailer, and show a video thumbnail (custom `videoThumb`, else the YouTube poster)
+    before playback. No-ops safely if the export shape changes."""
+    # a) tilesFor: use uploaded images (robust to string/object lists); else placeholders
     tf_old = ("const tilesFor = (i) => { const t = tilePatterns[i % tilePatterns.length]; "
               "return [...t, ...t].map(ar => ({ ar, bg: phBg })); };")
     tf_new = ("const BLANK = 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';\n"
               "    const tilesFor = (i, e) => {\n"
               "      const pat = tilePatterns[i % tilePatterns.length];\n"
-              "      const imgs = (e && Array.isArray(e.images)) ? e.images.filter(Boolean) : ((e && e.poster) ? [e.poster] : []);\n"
+              "      const imgs = (e && Array.isArray(e.images)) ? e.images.map(function(x){return (typeof x==='string')?x:((x&&(x.src||x.image||x.path))||'');}).filter(Boolean) : ((e && e.poster) ? [e.poster] : []);\n"
               "      if (imgs.length) return imgs.map((src) => ({ ar: 'auto', bg: phBg, img: src, imgShow: 'block' }));\n"
               "      return [...pat, ...pat].map(ar => ({ ar, bg: phBg, img: BLANK, imgShow: 'none' }));\n"
               "    };")
@@ -234,6 +274,7 @@ def _carousel_images(tmpl):
         tmpl = tmpl.replace("tiles: tilesFor(k),", "tiles: tilesFor(k, e),", 1)
     else:
         print("[carousel] note: tilesFor not found; skipped")
+    # b) render <img> inside each carousel tile
     tile_old = ('<div class="bp-ph" style="flex:0 0 auto;height:var(--th);width:auto;aspect-ratio:{{ t.ar }};'
                 'background-color:{{ t.bg }};border-radius:16px;overflow:hidden;cursor:pointer;position:relative;"></div>')
     tile_new = ('<div class="bp-ph" style="flex:0 0 auto;height:var(--th);width:auto;aspect-ratio:{{ t.ar }};'
@@ -243,6 +284,33 @@ def _carousel_images(tmpl):
         tmpl = tmpl.replace(tile_old, tile_new, 1)
     else:
         print("[carousel] note: bp-ph tile markup not found; skipped")
+    # c) YouTube id helper (regex-free) + per-post vid
+    yt = ("const _yt = (u) => { u = String(u||''); var id=''; var keys=['v=','youtu.be/','embed/','shorts/'];"
+          " for (var i=0;i<keys.length;i++){ var k=u.indexOf(keys[i]); if(k>=0){ id=u.substr(k+keys[i].length,11); break; } }"
+          " if(!id && u.length===11) id=u; var ok=id.length===11;"
+          " for(var j=0;j<id.length;j++){ var c=id[j]; if(!((c>='A'&&c<='Z')||(c>='a'&&c<='z')||(c>='0'&&c<='9')||c==='_'||c==='-')){ ok=false; break; } }"
+          " return ok?id:''; };\n    ")
+    if "const examplePosts = [];" in tmpl and "_yt = (u) =>" not in tmpl:
+        tmpl = tmpl.replace("const examplePosts = [];", yt + "const examplePosts = [];", 1)
+    if "const open = openPost === idx;" in tmpl and "const vid = _yt(" not in tmpl:
+        tmpl = tmpl.replace("const open = openPost === idx;",
+                            "const open = openPost === idx;\n      const vid = _yt(e.youtube || e.video || e.trailer || '');", 1)
+    # d) trailerEmbed uses the CMS YouTube URL (else auto-search); add videoBg poster
+    old_tr = ("trailerEmbed: 'https://www.youtube.com/embed?listType=search&list=' + "
+              "encodeURIComponent(e.title + ' ' + e.year + ' official trailer') + "
+              "'&autoplay=1&rel=0&playsinline=1&modestbranding=1&iv_load_policy=3',")
+    new_tr = ("trailerEmbed: vid ? ('https://www.youtube.com/embed/' + vid + '?autoplay=1&rel=0&playsinline=1&modestbranding=1&iv_load_policy=3') : "
+              "('https://www.youtube.com/embed?listType=search&list=' + encodeURIComponent(e.title + ' ' + e.year + ' official trailer') + '&autoplay=1&rel=0&playsinline=1&modestbranding=1&iv_load_policy=3'),\n"
+              "        videoBg: e.videoThumb ? ('url(\"' + e.videoThumb + '\")') : (vid ? ('url(\"https://img.youtube.com/vi/' + vid + '/hqdefault.jpg\")') : 'none'),")
+    if old_tr in tmpl:
+        tmpl = tmpl.replace(old_tr, new_tr, 1)
+    else:
+        print("[carousel] note: trailerEmbed not found; skipped")
+    # e) idle video area shows the videoBg poster
+    old_idle = 'cursor:pointer;background-color:{{ ex.detailPhBg }};background-size:cover;background-position:center;"></div>'
+    new_idle = 'cursor:pointer;background-color:{{ ex.detailPhBg }};background-image:{{ ex.videoBg }};background-size:cover;background-position:center;"></div>'
+    if old_idle in tmpl:
+        tmpl = tmpl.replace(old_idle, new_idle, 1)
     return tmpl
 
 def patch_main(html):
