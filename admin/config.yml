@@ -2,18 +2,23 @@ backend:
   name: github
   repo: bootlegpirates/cptnkid-site
   branch: main
-# Where uploaded images are stored / linked from.
-# Working thumbs live at the repo root under images/uploads and the site
-# serves them from /images/uploads, so media_folder must point there too
-# (NOT static/images/uploads, or new uploads 404 on the live site).
+
+# Uploaded images live at the repo root under images/uploads and are served
+# from /images/uploads on the live site, so media_folder must point there too
+# (NOT static/images/uploads, or new uploads 404 on prod).
 media_folder: "images/uploads"
 public_folder: "/images/uploads"
+
 collections:
   # ============================================================
-  # TIMELINE / POSTS  →  data/posts.json   (unchanged)
+  # HOMEPAGE POSTS  ->  data/posts.json   (the film / anime / doc catalogue)
+  # These are the paginated cards on the homepage. "type" drives the
+  # Movies / Anime / Documentary nav filter, so it MUST be one of
+  # movies | anime | documentary (lowercase). The trailer on the detail
+  # page is auto-searched on YouTube from the title + year.
   # ============================================================
-  - name: "content"
-    label: "Timeline Posts"
+  - name: "posts"
+    label: "Homepage posts"
     files:
       - name: "posts"
         label: "All posts"
@@ -24,83 +29,151 @@ collections:
             label: "Posts"
             label_singular: "Post"
             widget: "list"
+            summary: "{{fields.title}} ({{fields.year}})"
+            fields:
+              - { name: "title",    label: "Title",     widget: "string" }
+              - { name: "year",     label: "Year",      widget: "string" }
+              - name: "type"
+                label: "Type"
+                widget: "select"
+                options: ["movies", "anime", "documentary"]
+                default: "movies"
+                hint: "Drives the Movies / Anime / Documentary filter. Must be lowercase."
+              - { name: "director", label: "Director",  widget: "string" }
+              - name: "rating"
+                label: "Rating (0-5)"
+                widget: "number"
+                value_type: "float"
+                min: 0
+                max: 5
+                step: 0.1
+                default: 4
+              - { name: "duration", label: "Duration",           widget: "string", hint: "e.g. 95 mins" }
+              - { name: "rt",       label: "Rotten Tomatoes",     widget: "string", required: false, hint: "e.g. 96%" }
+              - { name: "lb",       label: "Letterboxd",          widget: "string", required: false, hint: "e.g. 4.2" }
+              - { name: "synopsis", label: "Synopsis",            widget: "text" }
+              - name: "pluses"
+                label: "Pluses"
+                widget: "list"
+                required: false
+                field: { name: "text", label: "Plus", widget: "string" }
+              - name: "minuses"
+                label: "Minuses"
+                widget: "list"
+                required: false
+                field: { name: "text", label: "Minus", widget: "string" }
+              - name: "poster"
+                label: "Poster image (optional)"
+                widget: "image"
+                required: false
+                hint: "Optional. If blank, the card uses the built-in placeholder tiles."
+
+  # ============================================================
+  # ANIME TV  ->  data/anime-tv.json
+  # The YouTube streams that play inside the CRT / camcorder overlay
+  # (shown when the Anime nav is selected and you open TV). "dur" is the
+  # video length in seconds; the player picks a random start up to ~85% of
+  # it, so set it roughly to the real length. Long streams can add an
+  # optional "maxStart" cap (seconds).
+  # ============================================================
+  - name: "anime_tv"
+    label: "Anime TV"
+    files:
+      - name: "anime_tv"
+        label: "Playlist"
+        file: "data/anime-tv.json"
+        format: "json"
+        fields:
+          - name: "videos"
+            label: "Videos"
+            label_singular: "Video"
+            widget: "list"
             summary: "{{fields.title}}"
             fields:
-              - { name: "title",       label: "Title",                           widget: "string" }
-              - { name: "category",    label: "Category",                        widget: "select", options: ["Movies", "Anime", "Docs", "Work"] }
-              - { name: "rating",      label: "Rating (0-5 stars)",              widget: "number", value_type: "int", min: 0, max: 5, default: 0 }
-              - { name: "description", label: "Description",                     widget: "text" }
-              - { name: "tags",        label: "Tags (comma separated)",          widget: "string", required: false }
-              - { name: "featured",    label: "Featured on homepage",            widget: "boolean", default: false }
-              - { name: "image",       label: "Main image",                      widget: "image",  required: false }
-              - { name: "video",       label: "Detail-page video (YouTube URL)", widget: "string", required: false }
-              - name: "featuredTitle"
-                label: "Featured card — title override"
-                widget: "string"
+              - { name: "title", label: "Title (internal)", widget: "string", required: false, hint: "A label to recognise the stream. Not shown on the site." }
+              - { name: "url",   label: "YouTube URL",       widget: "string", hint: "Any YouTube link works (watch, youtu.be, or embed)." }
+              - name: "dur"
+                label: "Length (seconds)"
+                widget: "number"
+                value_type: "int"
+                default: 600
+                hint: "Approx video length in seconds. Random start goes up to ~85% of this."
+              - name: "maxStart"
+                label: "Max random start (seconds, optional)"
+                widget: "number"
+                value_type: "int"
                 required: false
-                hint: "Only shown on the homepage FEATURED card. Leave blank to reuse the Title above."
-              - name: "featuredDesc"
-                label: "Featured card — description override"
-                widget: "text"
-                required: false
-                hint: "Only shown on the homepage FEATURED card. Leave blank to reuse the first sentence of Description above."
-              - name: "featuredTags"
-                label: "Featured card — small tags"
-                widget: "list"
-                required: false
-                max: 4
-                summary: "{{fields.label}}"
-                hint: "The small pill labels overlaid on the FEATURED card image (e.g. NEW, EPISODE)."
-                fields:
-                  - { name: "label", label: "Label", widget: "string" }
-                  - { name: "kind",  label: "Style",  widget: "select", options: ["default", "pink"], default: "default" }
-              - name: "carousel"
-                label: "Carousel images"
-                widget: "list"
-                required: false
-                max: 10
-                summary: "{{fields.caption}}"
-                fields:
-                  - { name: "image",   label: "Image",   widget: "image" }
-                  - { name: "caption", label: "Caption", widget: "string", required: false }
+                hint: "Only needed for very long streams you want to cap."
+              - { name: "order", label: "Sort order", widget: "number", value_type: "int", required: false }
+
   # ============================================================
-  # SITE SETTINGS  →  data/settings.json  (single file, global values)
+  # AMSTERDAM THEME  ->  data/amsterdam.json
+  # The looping background videos for the Amsterdam ("video") theme.
+  # maxSeconds is the highest random start point the player will jump to,
+  # so keep it a bit below the video's real length.
+  # ============================================================
+  - name: "amsterdam"
+    label: "Amsterdam theme"
+    files:
+      - name: "amsterdam"
+        label: "Background videos"
+        file: "data/amsterdam.json"
+        format: "json"
+        fields:
+          - name: "videos"
+            label: "Videos"
+            label_singular: "Video"
+            widget: "list"
+            summary: "{{fields.title}}"
+            fields:
+              - { name: "title", label: "Title (internal)", widget: "string", required: false }
+              - { name: "url",   label: "YouTube URL",      widget: "string", hint: "Any YouTube link works." }
+              - name: "maxSeconds"
+                label: "Max random start (seconds)"
+                widget: "number"
+                value_type: "int"
+                required: false
+                default: 0
+                hint: "Highest point the loop may start from. Set a bit below the clip length. 0 = always start at the beginning."
+              - { name: "order", label: "Sort order", widget: "number", value_type: "int", required: false }
+
+  # ============================================================
+  # INSTAGRAM  ->  data/instagram.json   (the "Random" grid)
+  # The new design's Random grid shows curated posts as an IG handle plus
+  # film metadata over generated gradient tiles. There is no image upload
+  # or live embed in this design, so the fields mirror what the grid renders.
+  # ============================================================
+  - name: "instagram"
+    label: "Instagram"
+    files:
+      - name: "instagram"
+        label: "Random grid"
+        file: "data/instagram.json"
+        format: "json"
+        fields:
+          - name: "posts"
+            label: "Posts"
+            label_singular: "Post"
+            widget: "list"
+            summary: "@{{fields.user}} — {{fields.title}}"
+            fields:
+              - { name: "user",     label: "Instagram handle", widget: "string", hint: "Without the @, e.g. retorojapan" }
+              - { name: "title",    label: "Film title", widget: "string" }
+              - { name: "year",     label: "Year",       widget: "string" }
+              - { name: "genre",    label: "Genre",      widget: "string", hint: "Free text label, e.g. Documentary, Drama, Sci-Fi" }
+              - { name: "director", label: "Director",   widget: "string" }
+              - { name: "duration", label: "Duration",   widget: "string", hint: "e.g. 100 mins" }
+              - { name: "rating",   label: "Rating",     widget: "string", hint: "Shown verbatim, e.g. 4.7 / 5" }
+
+  # ============================================================
+  # SITE SETTINGS  ->  data/settings.json  (single file, global values)
   # ============================================================
   - name: "settings"
-    label: "Video Mainpage"
+    label: "Site settings"
     files:
       - name: "settings"
         label: "General"
         file: "data/settings.json"
         format: "json"
         fields:
-          - name: "homeVideoUrl"
-            label: "Homepage hero video (YouTube URL)"
-            widget: "string"
-            hint: "The looping video on the left side of the homepage. Paste any YouTube link (watch, youtu.be, or embed URL all work)."
-  # ============================================================
-  # RANDOM PAGE (Instagram grid)  →  data/random.json  (file collection)
-  # Each tile is its own file in data/random/. A GitHub Action
-  # (.github/workflows/build-random.yml) rebuilds data/random.json — what the
-  # site reads — on every push, stripping internal fields (name, order).
-  # As a FOLDER collection, Sveltia shows a grid of thumbnail cards, keeps the
-  # "New" button pinned top-right, and lets you sort the grid.
-  # ============================================================
-  - name: "random"
-    label: "Instagram feed"
-    label_singular: "Tile"
-    folder: "data/random"
-    create: true
-    format: "json"
-    extension: "json"
-    identifier_field: "url"
-    slug: "tile-{{year}}{{month}}{{day}}-{{hour}}{{minute}}{{second}}"
-    summary: "{{fields.name}}  ·  {{fields.kind}}  ·  {{fields.url}}"
-    thumbnail: "thumb"
-    sortable_fields: ["order", "name", "url"]
-    fields:
-      - { name: "name",  label: "Name (internal only)", widget: "string", required: false, hint: "Just for you — a quick label to recognise the tile in the grid. Not shown on the site." }
-      - { name: "url",   label: "Instagram URL", widget: "string", hint: "Full post URL, e.g. https://www.instagram.com/p/XXXXXXXXX/" }
-      - { name: "kind",  label: "Type", widget: "select", options: ["video", "image"], default: "video" }
-      - { name: "thumb", label: "Thumbnail (optional)", widget: "image", required: false, hint: "Square image shown on the card and grid. If empty, the live Instagram embed is used on the site." }
-      - { name: "order", label: "Sort order (optional)", widget: "number", value_type: "int", required: false, hint: "Optional pin: lower number = higher up. Blank = auto, newest first." }
+          - { name: "wordmark", label: "Wordmark / logo text", widget: "string", required: false, hint: "The spinning wordmark text, e.g. BOOTLEG PIRATES & STUDIOS &" }
