@@ -1,51 +1,6 @@
 {
   "posts": [
     {
-      "user": "retorojapan",
-      "title": "Sans Soleil",
-      "year": "1983",
-      "genre": "Documentary",
-      "director": "Chris Marker",
-      "duration": "100 mins",
-      "rating": "4.7 / 5"
-    },
-    {
-      "user": "lostmediaclub",
-      "title": "La Jetée",
-      "year": "1962",
-      "genre": "Sci-Fi",
-      "director": "Chris Marker",
-      "duration": "28 mins",
-      "rating": "4.8 / 5"
-    },
-    {
-      "user": "grainarchive",
-      "title": "Daughters of the Dust",
-      "year": "1991",
-      "genre": "Drama",
-      "director": "Julie Dash",
-      "duration": "112 mins",
-      "rating": "4.4 / 5"
-    },
-    {
-      "user": "vhs.dreams",
-      "title": "The Gleaners & I",
-      "year": "2000",
-      "genre": "Documentary",
-      "director": "Agnès Varda",
-      "duration": "82 mins",
-      "rating": "4.6 / 5"
-    },
-    {
-      "user": "bootleg.reels",
-      "title": "Wanda",
-      "year": "1970",
-      "genre": "Drama",
-      "director": "Barbara Loden",
-      "duration": "102 mins",
-      "rating": "4.5 / 5"
-    },
-    {
       "user": "cinereject",
       "title": "Black Girl",
       "year": "1966",
