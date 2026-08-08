@@ -237,6 +237,20 @@ def _random_thumbnails(tmpl):
             else:
                 depth += 1
         if e2:
+            old_block = tmpl[s2:e2]
+            mtopbar = ''
+            mi = old_block.find('<div class="rnd-mtopbar"')
+            if mi != -1:
+                dtok = _r.compile(r'<div\b|</div>'); dd = 0; mj = None
+                for mt in dtok.finditer(old_block, mi):
+                    if mt.group(0).startswith('</'):
+                        dd -= 1
+                        if dd == 0:
+                            mj = mt.end(); break
+                    else:
+                        dd += 1
+                if mj:
+                    mtopbar = old_block[mi:mj]
             new_panel = ('<sc-if value="{{ randomDetail }}" hint-placeholder-val="{{ false }}">\n'
 '          <div class="rnd-detail" style="flex:0 0 48%;max-width:750px;align-self:stretch;">\n'
 '            <div class="rnd-detail-card" style="position:sticky;top:66px;border-radius:16px;overflow:hidden;background:#ffffff;display:flex;flex-direction:column;height:auto;box-sizing:border-box;box-shadow:0 20px 60px rgba(0,0,0,0.5);">\n'
@@ -256,6 +270,10 @@ def _random_thumbnails(tmpl):
 '            </div>\n'
 '          </div>\n'
 '        </sc-if>')
+            if mtopbar:
+                new_panel = new_panel.replace(
+                    '<div class="rnd-detail" style="flex:0 0 48%;max-width:750px;align-self:stretch;">\n',
+                    '<div class="rnd-detail" style="flex:0 0 48%;max-width:750px;align-self:stretch;">\n            ' + mtopbar + '\n', 1)
             tmpl = tmpl[:s2] + new_panel + tmpl[e2:]
     else:
         print("[random] note: rnd-detail panel not found; skipped")
