@@ -239,9 +239,9 @@ def _random_thumbnails(tmpl):
         if e2:
             new_panel = ('<sc-if value="{{ randomDetail }}" hint-placeholder-val="{{ false }}">\n'
 '          <div class="rnd-detail" style="flex:0 0 48%;max-width:750px;align-self:stretch;">\n'
-'            <div class="rnd-detail-card" style="position:sticky;top:66px;border-radius:16px;overflow:hidden;background:#ffffff;display:flex;flex-direction:column;height:calc(100vh - 156px);box-sizing:border-box;box-shadow:0 20px 60px rgba(0,0,0,0.5);">\n'
+'            <div class="rnd-detail-card" style="position:sticky;top:66px;border-radius:16px;overflow:hidden;background:#ffffff;display:flex;flex-direction:column;height:auto;box-sizing:border-box;box-shadow:0 20px 60px rgba(0,0,0,0.5);">\n'
 '              <sc-if value="{{ randomDetail.hasEmbed }}" hint-placeholder-val="{{ true }}">\n'
-'                <iframe src="{{ randomDetail.embed }}" title="Instagram post" style="flex:1 1 auto;width:100%;min-height:0;border:0;display:block;background:#ffffff;" scrolling="yes" allowtransparency="true" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share" allowfullscreen=""></iframe>\n'
+'                <iframe src="{{ randomDetail.embed }}" title="Instagram post" style="width:100%;height:600px;border:0;display:block;background:#ffffff;" scrolling="no" allowtransparency="true" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share" allowfullscreen=""></iframe>\n'
 '              </sc-if>\n'
 '              <sc-if value="{{ randomDetail.noEmbed }}" hint-placeholder-val="{{ false }}">\n'
 '                <div style="flex:1 1 auto;min-height:0;position:relative;background:#111;display:flex;align-items:center;justify-content:center;">\n'
@@ -320,6 +320,22 @@ def _carousel_images(tmpl):
         tmpl = tmpl.replace(old_idle, new_idle, 1)
     return tmpl
 
+def _inject_ig_resize(out):
+    if "__IG_RESIZE__" in out:
+        return out
+    script = ('<script>\n(function(){\n  if (window.__IG_RESIZE__) return; window.__IG_RESIZE__ = 1;\n'
+              '  window.addEventListener("message", function(e){\n'
+              '    if (!e || e.data == null) return;\n'
+              '    if (String(e.origin||"").indexOf("instagram.com") < 0) return;\n'
+              '    var d = e.data;\n'
+              '    try { if (typeof d === "string") d = JSON.parse(d); } catch(_){ return; }\n'
+              '    if (!d || d.type !== "MEASURE" || !d.details) return;\n'
+              '    var h = parseInt(d.details.height, 10); if (!h) return;\n'
+              '    var fr = document.getElementsByTagName("iframe");\n'
+              '    for (var i=0;i<fr.length;i++){ if (fr[i].contentWindow === e.source){ fr[i].style.height = h + "px"; break; } }\n'
+              '  }, false);\n})();\n</script>\n')
+    return out.replace("</head>", script + "</head>", 1)
+
 def patch_main(html):
     m = re.search(r'(<script type="__bundler/template">\s*)(.*?)(\s*</script>)', html, re.S)
     tmpl = json.loads(m.group(2))
@@ -332,6 +348,7 @@ def patch_main(html):
     tmpl = _carousel_images(tmpl)
     out = html[:m.start(2)] + _esc(tmpl) + html[m.end(2):]
     out = _re_thumb().sub("", out, count=1)  # drop the pre-load "CK" splash
+    out = _inject_ig_resize(out)
     return out, True
 
 def patch_crt(html):
