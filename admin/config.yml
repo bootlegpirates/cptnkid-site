@@ -64,10 +64,12 @@ collections:
                 field: { name: "text", label: "Minus", widget: "string" }
               - name: "images"
                 label: "Carousel images"
-                widget: "list"
+                widget: "image"
                 required: false
-                hint: "Upload one or more images to fill this post's carousel (shown left-to-right). If empty, placeholder tiles show."
-                field: { name: "image", label: "Image", widget: "image" }
+                multiple: true
+                hint: "Upload multiple images at once to fill this post's carousel (shown left-to-right). If empty, placeholder tiles show."
+              - { name: "youtube", label: "YouTube video URL", widget: "string", required: false, hint: "Full YouTube link for this post's trailer/video. If blank, one is auto-searched from title + year." }
+              - { name: "videoThumb", label: "Video thumbnail (optional)", widget: "image", required: false, hint: "Poster shown before the video plays. If blank, the YouTube thumbnail is used automatically." }
 
   # ============================================================
   # ANIME TV  ->  data/anime-tv.json
