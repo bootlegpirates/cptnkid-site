@@ -10,7 +10,8 @@
     {
       "title": "Yu-Gi-Oh!",
       "url": "https://www.youtube.com/watch?v=I6WRXeKZK64",
-      "dur": 30000,
+      "dur": 10000,
+      "maxStart": null,
       "order": 2
     },
     {
