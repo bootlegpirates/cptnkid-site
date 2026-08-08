@@ -1,0 +1,59 @@
+name: Apply live-data patch
+
+# Re-applies scripts/apply_live_patch.py to index.html whenever a fresh
+# Claude Design export lands on main. A raw export ships with content
+# hard-coded in the bundle; this rewrites it to read /data/*.json live.
+# The patch is idempotent — if index.html already carries the marker,
+# the script exits without changes and nothing is committed.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "index.html"
+      - "scripts/apply_live_patch.py"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: live-patch-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Skip if already patched
+        id: check
+        run: |
+          if grep -q "__CPTNKID_LIVE_PATCH__" index.html; then
+            echo "already=true" >> "$GITHUB_OUTPUT"
+            echo "index.html already patched — nothing to do."
+          else
+            echo "already=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Apply patch
+        if: steps.check.outputs.already == 'false'
+        run: python3 scripts/apply_live_patch.py index.html index.html
+
+      - name: Commit result
+        if: steps.check.outputs.already == 'false'
+        run: |
+          if git diff --quiet -- index.html; then
+            echo "No changes produced."
+            exit 0
+          fi
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          # NOTE: intentionally NO [skip ci] — Netlify honors it and would skip
+          # deploying the patched file. The push re-triggers this workflow once,
+          # but the "already patched" grep guard makes that run a no-op, so there
+          # is no loop and the patched index.html still deploys to prod.
+          git commit -m "chore: re-apply live-data patch to index.html"
+          git push
