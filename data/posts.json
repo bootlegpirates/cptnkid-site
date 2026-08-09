@@ -4,13 +4,16 @@
       "title": "I Am Not Your Negro",
       "year": "2016",
       "type": "documentary",
+      "subgenre": "Documentary, History, Biography, LGBTQ+",
       "director": "Raoul Peck",
       "rating": 4,
-      "duration": "93",
+      "duration": "93 mins",
       "rt": "99",
       "lb": "4.2",
       "synopsis": "Based on Baldwin's unfinished manuscript Remember This House - a stirring, personal account of the lives and deaths of his friends Medgar Evers, Malcolm X and Martin Luther King Jr. - acclaimed director Raoul Peck creates a meditation on what it means to be Black in the United States, using meticulously assembled archival footage and driven by stirring voiceover narration from Samuel L. Jackson.",
-      "pluses": [],
+      "pluses": [
+        "James Baldwin's words are as relevant today as they were when he first wrote them"
+      ],
       "minuses": [],
       "images": [
         "/images/uploads/mv5bmjqxmdyzmdq4n15bml5banbnxkftztgwmzg2ndewmti_v1_sy1000_cr0014971000_al_.jpg",
@@ -33,6 +36,7 @@
       "title": "Death in Venice",
       "year": "1971",
       "type": "movies",
+      "subgenre": "",
       "director": "Luchino Visconti",
       "rating": 4,
       "duration": "131 mins",
