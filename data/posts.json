@@ -6,7 +6,7 @@
       "type": "documentary",
       "subgenre": "Documentary, History, Biography, LGBTQ+",
       "director": "Raoul Peck",
-      "rating": 4,
+      "rating": 9,
       "duration": "93 mins",
       "rt": "99%",
       "lb": "4.2",
@@ -37,15 +37,20 @@
       "title": "Death in Venice",
       "year": "1971",
       "type": "movies",
-      "subgenre": "",
+      "subgenre": "Drama, LGBTQ+",
       "director": "Luchino Visconti",
-      "rating": 4,
+      "rating": 8,
       "duration": "131 mins",
       "rt": "70%",
       "lb": "3.7",
       "synopsis": "Composer Gustav von Aschenbach travels to Venice for health reasons. There, he becomes obsessed with the stunning beauty of an adolescent Polish boy named Tadzio who is staying with his family at the same Grand Hôtel des Bains on the Lido as Aschenbach.",
-      "pluses": [],
-      "minuses": [],
+      "pluses": [
+        "Amazing long and slow shots",
+        "As a viewer you get sucked in the main emotions of the movie"
+      ],
+      "minuses": [
+        "The main topic of the movie is controversial nowadays"
+      ],
       "images": [
         "/images/uploads/a6efeaa58c7ad5a1cdba9fada2dae950.jpeg",
         "/images/uploads/Death-in-Venice.avif",
