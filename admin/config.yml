@@ -39,6 +39,7 @@ collections:
                 options: ["movies", "anime", "documentary"]
                 default: "movies"
                 hint: "Drives the Movies / Anime / Documentary filter. Must be lowercase."
+              - { name: "subgenre", label: "Genre", widget: "string", required: false, hint: "e.g. Adventure, Drama, Epic. Shown as \"Genre\" in the expanded post." }
               - { name: "director", label: "Director",  widget: "string" }
               - name: "rating"
                 label: "Rating (0-5)"
