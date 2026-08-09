@@ -120,6 +120,11 @@ def _apply(text, bootstrap, patches, label):
     return text
 
 
+def _rename_subgenre_label(tmpl):
+    """Rename the on-page 'Subgenre:' meta label to 'Genre:' (the CMS field keeps the
+    JSON key `subgenre` to avoid colliding with the category `genre`). Idempotent."""
+    return tmpl.replace('>Subgenre:</div>', '>Genre:</div>')
+
 def _empty_live_fallbacks(tmpl):
     """Empty demo arrays in the already-patched `...:[demo]` form so a re-export that
     re-introduced demo content stays CMS-only. Idempotent (empty -> empty)."""
@@ -388,6 +393,7 @@ def patch_main(html):
     tmpl = _apply(tmpl, MAIN_BOOTSTRAP, MAIN_PATCHES, "main")
     tmpl = _empty_arrays(tmpl, MAIN_EMPTY, "main")
     tmpl = _empty_live_fallbacks(tmpl)
+    tmpl = _rename_subgenre_label(tmpl)
     tmpl = _cms_only_homepage(tmpl)
     tmpl = _random_thumbnails(tmpl)
     tmpl = _carousel_images(tmpl)
