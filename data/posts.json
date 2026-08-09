@@ -28,6 +28,31 @@
       "youtube": "https://www.youtube.com/watch?v=rNUYdgIyaPM&t=1s",
       "videoThumb": "/images/uploads/331_IAMNOTYOURNW0128014_BAN1_2424_NEWTV_HD.jpg",
       "poster": ""
+    },
+    {
+      "title": "Death in Venice",
+      "year": "1971",
+      "type": "movies",
+      "director": "Luchino Visconti",
+      "rating": 4,
+      "duration": "131 mins",
+      "rt": "70%",
+      "lb": "3.7",
+      "synopsis": "Composer Gustav von Aschenbach travels to Venice for health reasons. There, he becomes obsessed with the stunning beauty of an adolescent Polish boy named Tadzio who is staying with his family at the same Grand Hôtel des Bains on the Lido as Aschenbach.",
+      "pluses": [],
+      "minuses": [],
+      "images": [
+        "/images/uploads/a6efeaa58c7ad5a1cdba9fada2dae950.jpeg",
+        "/images/uploads/Death-in-Venice.avif",
+        "/images/uploads/Visconti_Death-in-Venice_002.jpg",
+        "/images/uploads/death-in-venice-1400x729.jpeg",
+        "/images/uploads/9e9f38a90105940702401f90362d1bf2.jpeg",
+        "/images/uploads/death-in-venice.jpg",
+        "/images/uploads/still_still-Death-in-Venice-Luchino-Visconti-ITFR-1971-1.jpg",
+        "/images/uploads/death-in-venice-still-3.jpeg"
+      ],
+      "youtube": "https://www.youtube.com/watch?v=GPkmRY3pDAE",
+      "videoThumb": "/images/uploads/Death-in-Venice-2.jpeg"
     }
   ]
 }
