@@ -88,7 +88,8 @@ def _empty_arrays(text, patches, label):
     for anchor, repl in patches:
         i = text.find(anchor)
         if i < 0:
-            raise SystemExit(f"[{label}] empty-anchor not found (bundle changed?): {anchor!r}")
+            print(f"[{label}] note: empty-anchor already applied or changed; skipped")
+            continue
         start = i + len(anchor) - 1          # index of the '['
         depth = 0; k = start
         while k < len(text):
@@ -113,10 +114,32 @@ def _apply(text, bootstrap, patches, label):
     text = text.replace("<head>", "<head>\n" + bootstrap + "\n", 1)
     for anchor, repl in patches:
         if anchor not in text:
-            raise SystemExit(f"[{label}] anchor not found (bundle changed?): {anchor!r}")
+            print(f"[{label}] note: patch anchor already applied or changed; skipped")
+            continue
         text = text.replace(anchor, repl, 1)
     return text
 
+
+def _empty_live_fallbacks(tmpl):
+    """Empty demo arrays in the already-patched `...:[demo]` form so a re-export that
+    re-introduced demo content stays CMS-only. Idempotent (empty -> empty)."""
+    for anchor in ('?window.__LIVE.posts:[', '?window.__LIVE.instagram:[', '?window.__LIVE.random:['):
+        i = tmpl.find(anchor)
+        if i < 0:
+            continue
+        start = i + len(anchor) - 1
+        depth = 0; k = start
+        while k < len(tmpl):
+            c = tmpl[k]
+            if c == '[':
+                depth += 1
+            elif c == ']':
+                depth -= 1
+                if depth == 0:
+                    k += 1; break
+            k += 1
+        tmpl = tmpl[:start] + '[]' + tmpl[k:]
+    return tmpl
 
 def _cms_only_homepage(tmpl):
     """Best-effort: strip the baked demo cards so the homepage/directors come ONLY
@@ -238,6 +261,9 @@ def _random_thumbnails(tmpl):
                 depth += 1
         if e2:
             old_block = tmpl[s2:e2]
+            if '{{ randomDetail.embed }}' in old_block:
+                print("[random] note: detail panel already Instagram-embed; left as-is")
+                return tmpl
             mtopbar = ''
             mi = old_block.find('<div class="rnd-mtopbar"')
             if mi != -1:
@@ -361,6 +387,7 @@ def patch_main(html):
         return html, False
     tmpl = _apply(tmpl, MAIN_BOOTSTRAP, MAIN_PATCHES, "main")
     tmpl = _empty_arrays(tmpl, MAIN_EMPTY, "main")
+    tmpl = _empty_live_fallbacks(tmpl)
     tmpl = _cms_only_homepage(tmpl)
     tmpl = _random_thumbnails(tmpl)
     tmpl = _carousel_images(tmpl)
@@ -369,10 +396,26 @@ def patch_main(html):
     out = _inject_ig_resize(out)
     return out, True
 
+def _find_crt_uuid(manifest):
+    """The anime-TV camcorder sub-bundle's asset id changes between exports; find it
+    by content (it is the asset that defines window.__CRT_DOC and this.videos)."""
+    if CRT_UUID in manifest:
+        return CRT_UUID
+    for uuid, e in manifest.items():
+        try:
+            rawb = base64.b64decode(e['data'])
+            txt = (gzip.decompress(rawb) if e.get('compressed') else rawb).decode('utf-8', 'replace')
+        except Exception:
+            continue
+        if '__CRT_DOC' in txt and 'this.videos' in txt:
+            return uuid
+    return None
+
 def patch_crt(html):
     mm = re.search(r'(<script type="__bundler/manifest">\s*)(.*?)(\s*</script>)', html, re.S)
     manifest = json.loads(mm.group(2))
-    e = manifest.get(CRT_UUID)
+    uuid = _find_crt_uuid(manifest)
+    e = manifest.get(uuid) if uuid else None
     if not e:
         return html, False
     raw = base64.b64decode(e['data'])
