@@ -63,6 +63,39 @@
       ],
       "youtube": "https://www.youtube.com/watch?v=GPkmRY3pDAE",
       "videoThumb": "/images/uploads/Death-in-Venice-2.jpeg"
+    },
+    {
+      "title": "Chungking Express",
+      "year": "1994",
+      "type": "movies",
+      "subgenre": "Drama, Romance",
+      "director": "Wong Kar-Wai",
+      "rating": 8,
+      "duration": "103 mins",
+      "rt": "89 %",
+      "lb": "4.3",
+      "synopsis": "In Hong Kong, two lovelorn and lonely police officers cross paths with two mysterious women. Cop 223 falls for a mysterious woman in a blonde wig, not knowing she is a big-time heroin smuggler. Meanwhile, Cop 663 visits a late-night diner, and the new server becomes secretly infatuated with him.",
+      "pluses": [
+        "Wong Kar-wai builds two loosely connected stories around loneliness and longing in Hong Kong, and the film trusts atmosphere, music, and texture to carry meaning rather than tight narrative logic."
+      ],
+      "minuses": [
+        "The two halves don't really talk to each other. Which can be hard to accept"
+      ],
+      "images": [
+        "/images/uploads/images-1.jpeg",
+        "/images/uploads/1_LLbRsY1IZps3s4iaHGa57Q.jpg",
+        "/images/uploads/5d86a35a-ecfb-4dd2-a7ea-d67642022e50_1797x1011.jpg",
+        "/images/uploads/226id_447_0000_226id_475-scaled.jpg",
+        "/images/uploads/8b9c223848f1861b17e46281cf830866.jpg",
+        "/images/uploads/chungking_express_screencap_06_webp.webp",
+        "/images/uploads/Chungking-Express-10-1-1.avif",
+        "/images/uploads/Chungking-Express10.jpg",
+        "/images/uploads/e0f1fbcc-9f88-40c7-a88b-052898702c87_1280x769.jpg",
+        "/images/uploads/Movie-still-Faye-Wong-Chunghing-Samlam-Chunking-Express-1994.webp",
+        "/images/uploads/Still-from-Chungking.png"
+      ],
+      "youtube": "https://www.youtube.com/watch?v=OPCug9jyG9k",
+      "videoThumb": "/images/uploads/chungking_express_screencap_03_webp.webp"
     }
   ]
 }
