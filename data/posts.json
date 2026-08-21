@@ -96,6 +96,38 @@
       ],
       "youtube": "https://www.youtube.com/watch?v=OPCug9jyG9k",
       "videoThumb": "/images/uploads/chungking_express_screencap_03_webp.webp"
+    },
+    {
+      "title": "Marty Supreme",
+      "year": "2025",
+      "type": "movies",
+      "subgenre": "Biography, Drama, Sports, Comedy",
+      "director": "Josh Safdie",
+      "rating": 6.5,
+      "duration": "149 mins",
+      "rt": "93%",
+      "lb": "4.0",
+      "synopsis": "Marty Mauser, a young man with a dream no one respects, goes to hell and back in pursuit of greatness.",
+      "pluses": [
+        "Daniel Lopatin's synth-heavy score gives the 1950s setting a disorienting, propulsive '80s energy that fits Safdie's frantic style"
+      ],
+      "minuses": [
+        "Marty is such a mean-spirited, self-serving character that watching him steamroll everyone around him grows exhausting rather than compelling. But this could also be a plus at the same time"
+      ],
+      "images": [
+        "/images/uploads/marty-supreme.jpg",
+        "/images/uploads/Jinx_0226_1140x700.jpg",
+        "/images/uploads/vf1225-marty-supreme-cameos.webp",
+        "/images/uploads/WEB-ICo-A24-1200x800.jpeg",
+        "/images/uploads/0c080064f14537d2349a19ee685e5b19-f77e0.jpg",
+        "/images/uploads/ontwerp-zonder-titel18.webp",
+        "/images/uploads/479deb92-6eea-44d3-b368-0f844b7c7fae.webp",
+        "/images/uploads/GettyImages-2176665244-1.webp",
+        "/images/uploads/download-1.jpeg",
+        "/images/uploads/timothee-chalamet-speelt-de-talentvolle-tafeltennisser-marty.avif"
+      ],
+      "youtube": "https://www.youtube.com/watch?v=s9gSuKaKcqM",
+      "videoThumb": "/images/uploads/media.avif"
     }
   ]
 }
