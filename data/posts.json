@@ -132,6 +132,41 @@
       ],
       "youtube": "https://www.youtube.com/watch?v=s9gSuKaKcqM",
       "videoThumb": "/images/uploads/media.avif"
+    },
+    {
+      "title": "The Cell",
+      "year": "2000",
+      "dateAdded": "2026-08-22T19:42",
+      "type": "movies",
+      "subgenre": "Drama, Fantasy, Horror",
+      "director": "Tarsem Singh",
+      "rating": 6,
+      "duration": "109",
+      "rt": "46%",
+      "lb": "3.3",
+      "synopsis": "An FBI agent persuades a social worker, who is adept with a new experimental technology, to enter the mind of a comatose serial killer in order to learn where he has hidden his latest kidnap victim.",
+      "pluses": [
+        "The way the killer's mind is displayed is simply amazing.",
+        "Costume and set design are A+"
+      ],
+      "minuses": [
+        "Casting doesn't match the vibe the movie gives",
+        "It could have been so much more if more emphasis had been placed on the mind of the murderer instead of rescuing the girl."
+      ],
+      "images": [
+        "/images/uploads/images (1).jpeg",
+        "/images/uploads/The Cell - 1.jpg",
+        "/images/uploads/the-cell-movie-2000.jpg",
+        "/images/uploads/image-w856_two_one.jpg",
+        "/images/uploads/the-cell-091.webp",
+        "/images/uploads/Cell-2000-10.jpg",
+        "/images/uploads/The-Cell-1.jpg",
+        "/images/uploads/MV5BMTk1NDUzOTU0NF5BMl5BanBnXkFtZTcwMTE1MDQ1NA@@._V1_.jpg",
+        "/images/uploads/MV5BMTgxNzEzODE4N15BMl5BanBnXkFtZTcwMzA1MDQ1NA@@._V1_.jpg",
+        "/images/uploads/MV5BMTY4Mjg2ODk1OF5BMl5BanBnXkFtZTcwMTA1MDQ1NA@@._V1_.jpg"
+      ],
+      "youtube": "https://www.youtube.com/watch?v=ZhH3CHunglk",
+      "videoThumb": "/images/uploads/images-2.jpeg"
     }
   ]
 }
