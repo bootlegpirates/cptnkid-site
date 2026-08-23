@@ -2,8 +2,8 @@
   "videos": [
     {
       "title": "Dragon Ball Z",
-      "url": "https://www.youtube.com/watch?v=jP5BWISLZg0",
-      "dur": 28000,
+      "url": "https://www.youtube.com/watch?v=saUPDYrlmZo",
+      "dur": 10000,
       "maxStart": null,
       "order": 0
     },
@@ -25,6 +25,7 @@
       "title": "Pokemon",
       "url": "https://www.youtube.com/watch?v=yteSsb4_QTU",
       "dur": 10800,
+      "maxStart": null,
       "order": 4
     }
   ]
