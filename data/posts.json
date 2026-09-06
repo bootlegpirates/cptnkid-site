@@ -197,6 +197,43 @@
       "youtube": "https://www.youtube.com/watch?v=rNUYdgIyaPM&t=1s",
       "videoThumb": "/images/uploads/331_IAMNOTYOURNW0128014_BAN1_2424_NEWTV_HD.jpg",
       "poster": ""
+    },
+    {
+      "title": "The Odyssey",
+      "year": "2026",
+      "dateAdded": "2026-09-06T21:51",
+      "type": "movies",
+      "subgenre": "Action, Adventure, Fantasy, War, Drama",
+      "director": "Christopher Nolan",
+      "rating": 7,
+      "duration": "172 mins",
+      "rt": "93%",
+      "lb": "4.4",
+      "synopsis": "After the fall of Troy, Odysseus embarks on an epic return journey to his homeland. Faced with foes from myth and legend, he will need to overcome impossible odds to return to the life he once knew—his kingdom, his wife Penelope, and his son Telemachus.",
+      "pluses": [
+        "Everything concerning Agamemnon",
+        "The Hades scene was triple A, great acting, visuals and make up"
+      ],
+      "minuses": [
+        "The scenes with the sirens and the whirlpool were just really weak. Felt like Nolan was in a rush",
+        "The Odyssey should have been at least three movies. Overall it felt rushed, and a lot of the challenges Odysseus faced were glossed over.",
+        "Please stop casting all the famous actors. These types of movies don't need it. Hire unknown talent and let them become Helen, or whoever."
+      ],
+      "images": [
+        "/images/uploads/CT-38345CC_MSG.jpg",
+        "/images/uploads/xnha2jvpo2eh1.jpeg",
+        "/images/uploads/elliot-page-odyssey-main.avif",
+        "/images/uploads/someone-knows-which-statue-it-is-on-the-poster-v0-qchgo48imu9f1.webp",
+        "/images/uploads/3761f0b4-d695-447e-a3e0-1e4484dad8a9.avif",
+        "/images/uploads/The-Odyssey-_-Official-Countdown-Trailer-0-22-screenshot-1.webp",
+        "/images/uploads/1_qMZJTm8vjhCeHxBFBBj7MQ.jpg",
+        "/images/uploads/MnQX5W3GybYBJ6kD3gG2xb.jpg",
+        "/images/uploads/the-odyssey.avif",
+        "/images/uploads/5bzmlou6e0gh1.jpeg",
+        "/images/uploads/fans-enthousiast-over-eerste-trailer-the-odyssey-van-christopher-nolan-kan-niet-wachten-197361766478834.webp"
+      ],
+      "youtube": "https://www.youtube.com/watch?v=f_bKjZeJBBI",
+      "videoThumb": "/images/uploads/mspfilm-odyssey_1920x1080.webp"
     }
   ]
 }
