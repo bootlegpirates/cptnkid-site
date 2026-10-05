@@ -17,14 +17,14 @@
     {
       "title": "Speed Racer",
       "url": "https://www.youtube.com/watch?v=ARskKIlQ8kE&list=PLcS6MKDlQYNaldc8yHePKk8vdrWcgjOc3",
-      "dur": 39600,
+      "dur": 1360,
       "maxStart": null,
       "order": 3
     },
     {
       "title": "Pokemon",
       "url": "https://www.youtube.com/watch?v=yteSsb4_QTU",
-      "dur": 1350,
+      "dur": 10000,
       "maxStart": null,
       "order": 4
     }
