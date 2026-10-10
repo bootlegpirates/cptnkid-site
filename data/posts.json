@@ -234,6 +234,34 @@
       ],
       "youtube": "https://www.youtube.com/watch?v=f_bKjZeJBBI",
       "videoThumb": "/images/uploads/mspfilm-odyssey_1920x1080.webp"
+    },
+    {
+      "title": "Serial Experiments Lain",
+      "year": "1998",
+      "dateAdded": "2026-10-10T09:29:00",
+      "type": "anime",
+      "subgenre": "TV Mini-series, Animation, Sci-Fi, Mystery",
+      "director": "Ryutaro Nakamura",
+      "rating": 9,
+      "duration": "312 mins",
+      "rt": "90%",
+      "lb": "4.4",
+      "synopsis": "Strange events begin to occur as a withdrawn girl named Lain becomes obsessed with interconnected virtual realm of “The Wired”.",
+      "pluses": [],
+      "minuses": [],
+      "images": [
+        "/images/uploads/maxresdefault.webp",
+        "/images/uploads/serial-experiments+-lain-anime-manga-dystopianmanga-cyber-punk-manga-cyberpunk-anime-darkanime-dark-ghostintheshell-vaporwave-RyutaroNakamura-YoshitoshiABe-ChiakiJKonaka.webp",
+        "/images/uploads/0_suw3AOw2NCjlQ7CB.jpg",
+        "/images/uploads/MV5BNjk5ZDlmMDEtMTIzOS00M2I5LTlhOTItNzM0YTcwY2QwOTI5XkEyXkFqcGc@._V1_.jpg",
+        "/images/uploads/serie-serial-experiments-lain-anime-resenha-critica-708x375.webp",
+        "/images/uploads/serial-experiments-lain-750 (1).avif",
+        "/images/uploads/lain-landscape.webp",
+        "/images/uploads/lain-bear-2.png",
+        "/images/uploads/serial-experiments-lain-navi.avif"
+      ],
+      "youtube": "https://www.youtube.com/watch?v=t5y4nQ5Y1V8",
+      "videoThumb": "/images/uploads/lain-landscape.webp"
     }
   ]
 }
